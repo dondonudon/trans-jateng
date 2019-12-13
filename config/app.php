@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'TRANS JATENG'),
+    'shortname' => env('APP_SHORT', 'T.Jateng'),
+    'developer' => env('APP_DEVELOPER','WAVE Solusi Indonesia'),
 
     /*
     |--------------------------------------------------------------------------

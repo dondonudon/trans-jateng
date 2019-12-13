@@ -11,5 +11,30 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+// mix.js('resources/js/app.js', 'public/js')
+//     .sass('resources/sass/app.scss', 'public/css');
+
+mix
+    .scripts([
+        'node_modules/jquery/dist/jquery.js',
+        'node_modules/popper.js/dist/umd/popper.js',
+        'node_modules/bootstrap/dist/js/bootstrap.js',
+        'node_modules/jquery.nicescroll/dist/jquery.nicescroll.js',
+        'node_modules/moment/moment.js',
+    ],'public/vendors/general.js')
+    .scripts([
+        'node_modules/daterangepicker/daterangepicker.js',
+        'node_modules/datatables.net/js/jquery.dataTables.js',
+        'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js',
+        'node_modules/sweetalert2/dist/sweetalert2.js',
+        'node_modules/numeral/src/numeral.js',
+        'node_modules/cleave.js/dist/cleave.js',
+        'node_modules/select2/dist/js/select2.js',
+    ], 'public/vendors/plugin.js')
+    .styles([
+        'node_modules/bootstrap/dist/css/bootstrap.css',
+        'node_modules/daterangepicker/daterangepicker.css',
+        'node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css',
+        'node_modules/sweetalert2/dist/sweetalert2.css',
+        'node_modules/select2/dist/css/select2.css',
+    ], 'public/vendors/plugin.css');
