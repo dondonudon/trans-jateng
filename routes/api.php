@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,21 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('koridor',function () {
+    $koridor = [];
+    if (isset($_GET['search'])) {
+        $koridor['results'] = DB::table('ms_koridor')
+            ->select('id','koridor as text')
+            ->where('koridor','like','%'.$_GET['search'].'%')
+            ->orderBy('koridor','asc')
+            ->get();
+    } else {
+        $koridor['results'] = DB::table('ms_koridor')
+            ->select('id','koridor as text')
+            ->orderBy('koridor','asc')
+            ->get();
+    }
+    return $koridor;
 });

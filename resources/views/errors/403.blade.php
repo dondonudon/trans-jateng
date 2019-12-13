@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>403 &mdash; STNK Tarakan</title>
+    <title>{{ config('app.name') }} &mdash; 403</title>
 
     @include('dashboard._partials.head')
 </head>
@@ -16,17 +16,17 @@
                 <div class="page-inner">
                     <h1>403</h1>
                     <div class="page-description">
-                        You don't have access to this page.
+                        Anda tidak diperkenankan untuk mengakses halaman ini.
                     </div>
                     <div class="page-search">
                         <div class="mt-3">
-                            <a href="{{ url('/') }}">Back to Home</a>
+                            <a href="{{ url()->previous() }}">Kembali ke halaman sebelumnya</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="simple-footer mt-5">
-                <i class="fas fa-copyright"></i> {{ date('Y') }} - STNK Tarakan
+                <i class="fas fa-copyright"></i> {{ date('Y') }} &mdash; {{ config('app.name') }}
             </div>
         </div>
     </section>

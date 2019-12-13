@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>404 &mdash; STNK Tarakan</title>
+    <title>{{ config('app.name') }} &mdash; 404</title>
 
     @include('dashboard._partials.head')
 </head>
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="simple-footer mt-5">
-                <i class="fas fa-copyright"></i> {{ date('Y') }} - STNK Tarakan
+                <i class="fas fa-copyright"></i> {{ date('Y') }} &mdash; {{ config('app.name') }}
             </div>
         </div>
     </section>

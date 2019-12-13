@@ -14,10 +14,10 @@
 <div id="app">
     <div class="main-wrapper">
         <div class="navbar-bg"></div>
-    @include('dashboard._partials.navbar')
-    @include('dashboard._partials.sidebar')
+        @include('dashboard._partials.navbar')
+        @include('dashboard._partials.sidebar')
 
-    <!-- Main Content -->
+        <!-- Main Content -->
         <div class="main-content">
             <section class="section">
                 @include('dashboard._partials.section-header')

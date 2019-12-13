@@ -25,6 +25,7 @@ Route::middleware(['check.login'])->group(function () {
     Route::get('/', function () {
         return redirect('dashboard');
     });
+
     Route::get('dashboard','c_Overview@index');
     Route::get('dashboard/profile','c_Profile@edit');
     Route::post('dashboard/profile/submit','c_Profile@submit');
@@ -55,5 +56,11 @@ Route::middleware(['check.login'])->group(function () {
         Route::get('dashboard/master/koridor/data','c_MasterKoridor@data');
         Route::get('dashboard/master/koridor/edit/{id}','c_MasterKoridor@edit');
         Route::post('dashboard/master/koridor/submit','c_MasterKoridor@submit');
+
+        Route::get('dashboard/master/bus','c_MasterBus@index');
+        Route::get('dashboard/master/bus/list','c_MasterBus@list');
+        Route::get('dashboard/master/bus/data','c_MasterBus@data');
+        Route::get('dashboard/master/bus/edit/{id}','c_MasterBus@edit');
+        Route::post('dashboard/master/bus/submit','c_MasterBus@submit');
     });
 });
