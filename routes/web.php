@@ -62,5 +62,11 @@ Route::middleware(['check.login'])->group(function () {
         Route::get('dashboard/master/bus/data','c_MasterBus@data');
         Route::get('dashboard/master/bus/edit/{id}','c_MasterBus@edit');
         Route::post('dashboard/master/bus/submit','c_MasterBus@submit');
+
+        Route::get('dashboard/master/penumpang','c_MasterPenumpang@index');
+        Route::get('dashboard/master/penumpang/list','c_MasterPenumpang@list');
+        Route::get('dashboard/master/penumpang/data','c_MasterPenumpang@data');
+        Route::get('dashboard/master/penumpang/edit/{id}','c_MasterPenumpang@edit');
+        Route::post('dashboard/master/penumpang/submit','c_MasterPenumpang@submit');
     });
 });

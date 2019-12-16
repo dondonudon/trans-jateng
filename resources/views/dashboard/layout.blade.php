@@ -4,7 +4,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>Trans Jateng - @yield('title')</title>
+    <title>Trans Jateng {{ request()->segment(2) ? ' - '.ucfirst(request()->segment(2)).' '.ucfirst(request()->segment(3)) : '' }}</title>
 
     @include('dashboard._partials.head')
     @yield('style')
