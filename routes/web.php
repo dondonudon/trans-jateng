@@ -68,5 +68,13 @@ Route::middleware(['check.login'])->group(function () {
         Route::get('dashboard/master/penumpang/data','c_MasterPenumpang@data');
         Route::get('dashboard/master/penumpang/edit/{id}','c_MasterPenumpang@edit');
         Route::post('dashboard/master/penumpang/submit','c_MasterPenumpang@submit');
+
+        Route::get('dashboard/master/hari-libur','c_MasterHariLibur@index');
+        Route::get('dashboard/master/hari-libur/list','c_MasterHariLibur@list');
+        Route::post('dashboard/master/hari-libur/data','c_MasterHariLibur@data');
+        Route::get('dashboard/master/hari-libur/edit/{tgl}','c_MasterHariLibur@edit');
+        Route::post('dashboard/master/hari-libur/submit','c_MasterHariLibur@submit');
+
+        Route::get('dashboard/penjualan/tiket-offline','c_PenjualanTiketOffline@index');
     });
 });

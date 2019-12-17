@@ -35,3 +35,5 @@ Route::get('koridor',function () {
     }
     return $koridor;
 });
+
+Route::get('login','c_Android@login');
