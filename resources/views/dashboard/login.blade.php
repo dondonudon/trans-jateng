@@ -21,10 +21,13 @@
                     </div>
 
                     <div class="row" id="pageLoading">
-                        <div class="col text-center">
+                        <div class="col-12 text-center">
                             <div class="spinner-border text-danger" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
+                        </div>
+                        <div class="col-12 text-danger text-center">
+                            LOADING ALL ASSETS...
                         </div>
                     </div>
 
