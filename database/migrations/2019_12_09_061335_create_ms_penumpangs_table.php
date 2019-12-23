@@ -17,7 +17,7 @@ class CreateMsPenumpangsTable extends Migration
             $table->bigIncrements('id');
             $table->string('jenis',15);
             $table->decimal('harga',6,2);
-            $table->integer('status')->default(0);
+            $table->tinyInteger('status')->default(1)->comment('0:nonaktif, 1:aktif');
             $table->timestamps();
         });
     }

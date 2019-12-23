@@ -21,6 +21,7 @@ class CreateMsBusesTable extends Migration
             $table->string('no_pol',12);
             $table->string('longitude',25);
             $table->string('latitude',25);
+            $table->tinyInteger('status')->default(1)->comment('0:nonaktif, 1:aktif');
             $table->timestamps();
         });
     }

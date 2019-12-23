@@ -19,8 +19,11 @@ class CreateMsKoridorsTable extends Migration
             $table->string('rute',100);
             $table->string('trip_a',50);
             $table->string('trip_b',50);
-            $table->string('longitude',25);
-            $table->string('latitude',25);
+            $table->string('longitude_a',25);
+            $table->string('latitude_a',25);
+            $table->string('longitude_b',25);
+            $table->string('latitude_b',25);
+            $table->tinyInteger('status')->default(1)->comment('0:nonaktif, 1:aktif');
             $table->timestamps();
         });
     }

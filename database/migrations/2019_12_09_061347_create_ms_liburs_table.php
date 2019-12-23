@@ -17,7 +17,7 @@ class CreateMsLibursTable extends Migration
             $table->bigIncrements('id');
             $table->date('tanggal');
             $table->integer('id_penumpang');
-            $table->text('keterangan');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }
