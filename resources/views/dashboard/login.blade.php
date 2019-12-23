@@ -20,6 +20,14 @@
                         <img id="logo" src="{{ asset('assets/logo/with-name/logo-1000.png') }}" alt="logo" style="width: 100%">
                     </div>
 
+                    <div class="row" id="pageLoading">
+                        <div class="col text-center">
+                            <div class="spinner-border text-danger" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div id="loginCard" class="card card-danger d-none">
                         <div class="card-header"><h4>Login</h4></div>
 
@@ -91,10 +99,12 @@
     let btnSubmit = $('#btnSubmit');
     let loading = $('#loading');
 
+    let pageLoading =$('#pageLoading');
     let loginCard = $('#loginCard');
     let logo = $('#logo');
 
     $(document).ready(function () {
+        pageLoading.addClass('d-none');
         logo.css('width','40%');
         loginCard.removeClass('d-none');
         formLogin.submit(function (e) {
