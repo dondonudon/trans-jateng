@@ -17,7 +17,7 @@
                 {{--                <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">--}}
                 <div class="col-12 col-sm-8 col-md-6 col-lg-6 col-xl-4">
                     <div class="login-brand">
-                        <img src="{{ asset('assets/logo/with-name/1000x1000.png') }}" alt="logo" style="width: 40%">
+                        <img src="{{ asset('assets/logo/with-name/logo-1000.png') }}" alt="logo" style="width: 40%">
                     </div>
 
                     <div class="card card-danger">

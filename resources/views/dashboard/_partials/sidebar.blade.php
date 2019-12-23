@@ -10,7 +10,7 @@
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
             <a href="{{ url('/') }}">
-                <img src="{{ asset('assets/logo/without-name/1000x1000.png') }}" style="width: 100%" alt="logo">
+                <img src="{{ asset('assets/logo/without-name/logo-1000.png') }}" style="width: 100%" alt="logo">
             </a>
         </div>
         <ul class="sidebar-menu">
