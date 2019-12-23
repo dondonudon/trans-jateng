@@ -3,11 +3,19 @@
 @section('title','Master User')
 
 @section('page_menu')
-    <li class="nav-item active">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">Tambah User</a>
+    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
+            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
+            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah User</div>
+        </a>
     </li>
-    <li class="nav-item">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">List User</a>
+    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
+            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
+            <span class="d-none d-lg-inline-block d-xl-inline-block">
+                 Daftar User
+            </span>
+        </a>
     </li>
 @endsection
 
@@ -38,13 +46,13 @@ $menu = \App\Http\Controllers\c_Dashboard::sidebar();
                             <div class="form-group">
                                 <label>Email</label>
                                 <input name="email" type="text" class="form-control">
-                                <small>Email dengan akhiran gmail.com dapat digunakan untuk login menggunakan google akun.</small>
+                                <small>Anda tidak harus mengisi email.</small>
                             </div>
                             <div class="form-group">
                                 <label for="iSystem">System</label>
                                 <select class="form-control" id="iSystem" name="system">
                                     <option value="0">Android & Website</option>
-                                    <option value="l">Android</option>
+                                    <option value="1">Android</option>
                                     <option value="2">Website</option>
                                 </select>
                             </div>

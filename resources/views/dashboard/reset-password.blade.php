@@ -25,11 +25,6 @@
                         <div class="card-body">
                             <form id="formReset">
                                 <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input id="username" type="text" class="form-control" name="username" tabindex="1" value="{{ $data->username }}" readonly>
-                                </div>
-
-                                <div class="form-group">
                                     <label for="oldPassword">Password Lama</label>
                                     <input id="oldPassword" type="password" class="form-control" name="password_lama" tabindex="1" required autofocus>
                                 </div>
@@ -55,7 +50,10 @@
                         </div>
                     </div>
                     <div class="simple-footer">
-                        Copyright &copy; Stisla 2018
+                        <i class="fas fa-copyright"></i> {{ date('Y') }} {{ config('app.name') }}
+                        <p>
+                            Developed by <a href="http://waveitsolution.com">{{ config('app.developer') }}</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -135,7 +133,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'System Error',
-                            text: 'Screenshot atau foto halaman ini dan hubungi WAVE Solusi Indonesia!',
+                            text: 'Silahkan hubungi WAVE Solusi Indonesia!',
                         });
                     }
                 })

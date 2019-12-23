@@ -17,6 +17,13 @@
     </li>
 @endsection
 
+@php
+$tersimpan = [];
+foreach ($data as $d) {
+    $tersimpan[] = $d->id_penumpang;
+}
+@endphp
+
 @section('content')
     <div class="section-body">
         <div class="row">
@@ -27,25 +34,40 @@
                     </div>
                     <form id="formData">
                         <input type="hidden" name="type" value="edit">
-                        <input type="hidden" id="iID" name="id" value="{{ $data->id }}">
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="iKoridor">Koridor</label>
-                                <select style="width: 100%" id="iKoridor" name="koridor" required>
-                                    <option value="{{ $data->id_koridor }}">{{ $data->koridor }}</option>
-                                </select>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="iTanggal">Tanggal</label>
+                                        <input type="text" class="form-control" id="iTanggal" name="tanggal" value="{{ date('d-m-Y',strtotime($data[0]->tanggal)) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <div class="control-label">Penumpang</div>
+                                        <div class="custom-switches-stacked mt-2">
+                                            @foreach($penumpang as $p)
+                                                @if(in_array($p->id,$tersimpan))
+                                                    <label class="custom-switch">
+                                                        <input type="checkbox" name="penumpang[]" value="{{ $p->id }}" class="custom-switch-input" checked>
+                                                        <span class="custom-switch-indicator"></span>
+                                                        <span class="custom-switch-description">{{ $p->jenis }}</span>
+                                                    </label>
+                                                @else
+                                                    <label class="custom-switch">
+                                                        <input type="checkbox" name="penumpang[]" value="{{ $p->id }}" class="custom-switch-input">
+                                                        <span class="custom-switch-indicator"></span>
+                                                        <span class="custom-switch-description">{{ $p->jenis }}</span>
+                                                    </label>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="iNama">Nama Bus</label>
-                                <input type="text" class="form-control" id="iNama" name="nama" value="{{ $data->nama }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="iMerk">Merk Bus</label>
-                                <input type="text" class="form-control" id="iMerk" name="merk" value="{{ $data->merk }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="iNoPol">No Polisi</label>
-                                <input type="text" class="form-control" id="iNoPol" name="no_pol" value="{{ $data->no_pol }}">
+                                <label for="iKeterangan">Keterangan</label>
+                                <input type="text" class="form-control" id="iKeterangan" name="keterangan" value="{{ $data[0]->keterangan }}">
                             </div>
                         </div>
                         <div class="card-footer bg-whitesmoke">
@@ -72,25 +94,12 @@
 @section('script')
     <script type="text/javascript">
         let formData = $('#formData');
-        let iKoridor = $('#iKoridor');
 
         $(document).ready(function () {
-            iKoridor.select2({
-                ajax: {
-                    url: '{{ url('api/koridor') }}',
-                    dataType: 'json',
-                    data: function (params) {
-                        return {
-                            search: params.term,
-                        }
-                    }
-                }
-            });
-
             formData.submit(function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '{{ url('dashboard/master/bus/submit') }}',
+                    url: '{{ url('dashboard/master/hari-libur/submit') }}',
                     method: 'post',
                     data: $(this).serialize(),
                     success: function (response) {

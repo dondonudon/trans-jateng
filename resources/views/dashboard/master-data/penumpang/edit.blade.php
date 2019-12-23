@@ -29,23 +29,19 @@
                         <input type="hidden" name="type" value="edit">
                         <input type="hidden" id="iID" name="id" value="{{ $data->id }}">
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="iKoridor">Koridor</label>
-                                <select style="width: 100%" id="iKoridor" name="koridor" required>
-                                    <option value="{{ $data->id_koridor }}">{{ $data->koridor }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="iNama">Nama Bus</label>
-                                <input type="text" class="form-control" id="iNama" name="nama" value="{{ $data->nama }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="iMerk">Merk Bus</label>
-                                <input type="text" class="form-control" id="iMerk" name="merk" value="{{ $data->merk }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="iNoPol">No Polisi</label>
-                                <input type="text" class="form-control" id="iNoPol" name="no_pol" value="{{ $data->no_pol }}">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="iJenis">Jenis</label>
+                                        <input type="text" class="form-control" id="iJenis" name="jenis" value="{{ $data->jenis }}">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="iHarga">Harga</label>
+                                        <input type="text" class="form-control" id="iHarga" name="harga">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer bg-whitesmoke">
@@ -72,27 +68,27 @@
 @section('script')
     <script type="text/javascript">
         let formData = $('#formData');
-        let iKoridor = $('#iKoridor');
+        const iJenis = $('#iJenis');
+        const iHarga = new Cleave('#iHarga', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+        });
 
         $(document).ready(function () {
-            iKoridor.select2({
-                ajax: {
-                    url: '{{ url('api/koridor') }}',
-                    dataType: 'json',
-                    data: function (params) {
-                        return {
-                            search: params.term,
-                        }
-                    }
-                }
-            });
-
+            iHarga.setRawValue('{{ $data->harga }}');
             formData.submit(function (e) {
                 e.preventDefault();
+                let jenis = iJenis.val();
+                let harga = iHarga.getRawValue();
                 $.ajax({
-                    url: '{{ url('dashboard/master/bus/submit') }}',
+                    url: '{{ url('dashboard/master/penumpang/submit') }}',
                     method: 'post',
-                    data: $(this).serialize(),
+                    data: {
+                        type: 'edit',
+                        id: '{{ $data->id }}',
+                        jenis: jenis,
+                        harga: harga
+                    },
                     success: function (response) {
                         if (response === 'success') {
                             Swal.fire({

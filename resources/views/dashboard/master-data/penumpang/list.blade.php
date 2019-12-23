@@ -1,22 +1,5 @@
 @extends('dashboard.layout')
 
-@section('page_menu')
-    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
-            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah {{ ucfirst(request()->segment(3)) }}</div>
-        </a>
-    </li>
-    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
-            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <span class="d-none d-lg-inline-block d-xl-inline-block">
-                 Daftar {{ ucfirst(request()->segment(3)) }}
-            </span>
-        </a>
-    </li>
-@endsection
-
 @section('content')
     <div class="section-body">
         <div class="row">
@@ -66,7 +49,7 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: '{{ url('dashboard/master/bus') }}/'+status,
+                        url: '{{ url('dashboard/master/penumpang') }}/'+status,
                         method: 'post',
                         data: data,
                         success: function (response) {
@@ -113,7 +96,7 @@
                 layout: "fitDataStretch",
                 selectable: 1,
                 pagination: "remote",
-                ajaxURL: "{{ url('dashboard/master/bus/data') }}",
+                ajaxURL: "{{ url('dashboard/master/penumpang/data') }}",
                 ajaxConfig: {
                     method: "POST",
                     headers: {
@@ -128,7 +111,7 @@
                         title:"Status",field:"status",width:100,
                         formatter: function (row) {
                             if (row.getData().status === 1) {
-                                row.getElement().style.backgroundColor = "rgba(0,155,0,0.8)";
+                                row.getElement().style.backgroundColor = "rgba(0,155,0,0.81)";
                                 row.getElement().style.color = "white";
                                 row.getElement().style.textAlign = "center";
                                 return 'Aktif';
@@ -140,12 +123,13 @@
                             }
                         }
                     },
-                    {title:"Koridor",field:"koridor"},
-                    {title:"Nama",field:"nama"},
-                    {title:"Merk",field:"merk"},
-                    {title:"No Pol",field:"no_pol"},
-                    {title:"Longitude",field:"longitude"},
-                    {title:"Latitude",field:"latitude"},
+                    {title:"Jenis Penumpang",field:"jenis"},
+                    {
+                        title:"Harga",field:"harga",
+                        formatter: function (cell) {
+                            return numeral(cell.getValue()).format('0,0.0');
+                        }
+                    },
                 ],
                 rowSelectionChanged:function (data,rows) {
                     if (data.length === 1) {
@@ -164,11 +148,58 @@
                     }
                 }
             });
+            {{--let listTable = $('#listTable').DataTable({--}}
+            {{--    scrollX: true,--}}
+            {{--    order: [--}}
+            {{--        [ 0, 'asc' ],--}}
+            {{--    ],--}}
+            {{--    ajax: {--}}
+            {{--        url: '{{ url('dashboard/master/penumpang/data') }}'--}}
+            {{--    },--}}
+            {{--    columns: [--}}
+            {{--        {--}}
+            {{--            data: 'status',--}}
+            {{--            render: function (data) {--}}
+            {{--                if (data === 1) {--}}
+            {{--                    return 'Aktif';--}}
+            {{--                } else {--}}
+            {{--                    return 'Nonaktif';--}}
+            {{--                }--}}
+            {{--            },--}}
+            {{--            createdCell: function (td, cellData, rowData, row, col) {--}}
+            {{--                if (cellData === 1) {--}}
+            {{--                    $(td).css('background-color', 'green');--}}
+            {{--                    $(td).css('color', 'white');--}}
+            {{--                } else {--}}
+            {{--                    $(td).css('background-color', 'maroon');--}}
+            {{--                    $(td).css('color', 'white');--}}
+            {{--                }--}}
+            {{--            }--}}
+            {{--        },--}}
+            {{--        {data: 'jenis'},--}}
+            {{--        {data: 'harga'},--}}
+            {{--    ],--}}
+            {{--});--}}
+            {{--$('#listTable tbody').on('click','tr',function () {--}}
+            {{--    if ($(this).hasClass('selected')) {--}}
+            {{--        $(this).removeClass('selected');--}}
+            {{--        btnEdit.attr('disabled',true);--}}
+
+            {{--        dataID = null;--}}
+            {{--    } else {--}}
+            {{--        listTable.$('tr.selected').removeClass('selected');--}}
+            {{--        $(this).addClass('selected');--}}
+            {{--        btnEdit.removeAttr('disabled');--}}
+
+            {{--        let data = listTable.row('.selected').data();--}}
+            {{--        dataID = data.id;--}}
+            {{--    }--}}
+            {{--});--}}
 
             btnEdit.click(function (e) {
                 e.preventDefault();
                 let id = listTable.getSelectedData()[0].id;
-                window.location = '{{ url('dashboard/master/bus/edit') }}/'+id;
+                window.location = '{{ url('dashboard/master/penumpang/edit') }}/'+id;
             });
 
             btnDisable.click(function (e) {
@@ -177,10 +208,10 @@
                 changeStatus(
                     {id: id},
                     'disable',
-                    'Nonaktifkan bus ini?',
-                    'Nonaktifkan Bus',
-                    'Bus nonaktif!',
-                    'Gagal menonaktifkan bus, silahkan coba lagi!',
+                    'Nonaktifkan penumpang ini?',
+                    'Nonaktifkan Penumpang',
+                    'Penumpang nonaktif!',
+                    'Gagal menonaktifkan penumpang, silahkan coba lagi!',
                     listTable
                 );
             });
@@ -191,10 +222,10 @@
                 changeStatus(
                     {id: id},
                     'activate',
-                    'Aktifkan bus ini?',
-                    'Aktifkan Bus',
-                    'Bus aktif!',
-                    'Gagal mengaktifkan bus, silahkan coba lagi!',
+                    'Aktifkan penumpang ini?',
+                    'Aktifkan Penumpang',
+                    'Penumpang aktif!',
+                    'Gagal mengaktifkan penumpang, silahkan coba lagi!',
                     listTable
                 );
             });

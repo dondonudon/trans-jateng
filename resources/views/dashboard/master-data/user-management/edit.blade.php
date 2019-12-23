@@ -1,11 +1,19 @@
 @extends('dashboard.layout')
 
 @section('page_menu')
-    <li class="nav-item">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">Tambah User</a>
+    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
+            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
+            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah User</div>
+        </a>
     </li>
-    <li class="nav-item">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">List User</a>
+    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
+            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
+            <span class="d-none d-lg-inline-block d-xl-inline-block">
+                 Daftar User
+            </span>
+        </a>
     </li>
 @endsection
 
@@ -40,6 +48,14 @@
                                 <small>
                                     Anda tidak harus mengisi email.
                                 </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="iSystem">System</label>
+                                <select class="form-control" id="iSystem" name="system">
+                                    <option value="0">Android & Website</option>
+                                    <option value="1">Android</option>
+                                    <option value="2">Website</option>
+                                </select>
                             </div>
                             <hr>
                             <h5>Permission</h5>
@@ -93,8 +109,10 @@
 @section('script')
     <script type="text/javascript">
         let formData = $('#formData');
+        const iSystem = $('#iSystem');
 
         $(document).ready(function () {
+            iSystem.val('{{ $data->system }}');
             $('#listTable').DataTable({
                 responsive: true
             });
@@ -102,7 +120,7 @@
             formData.submit(function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '{{ url('master/user-management/submit') }}',
+                    url: '{{ url('dashboard/master/user-management/submit') }}',
                     method: 'post',
                     data: $(this).serialize(),
                     success: function (response) {
@@ -113,7 +131,7 @@
                                 showConfirmButton: false,
                                 timer: 1000,
                                 onClose: function () {
-                                    window.location = '{{ url('master/user-management') }}';
+                                    window.location = '{{ url('dashboard/master/user-management') }}';
                                 }
                             });
                         } else {

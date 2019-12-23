@@ -1,19 +1,11 @@
 @extends('dashboard.layout')
 
 @section('page_menu')
-    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
-            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah {{ ucfirst(request()->segment(3)) }}</div>
-        </a>
+    <li class="nav-item active">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">{{ ucfirst(request()->segment(3)) }} Baru</a>
     </li>
-    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
-            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <span class="d-none d-lg-inline-block d-xl-inline-block">
-                 Daftar {{ ucfirst(request()->segment(3)) }}
-            </span>
-        </a>
+    <li class="nav-item">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">List {{ ucfirst(request()->segment(3)) }}</a>
     </li>
 @endsection
 
@@ -28,21 +20,19 @@
                     <form id="formData">
                         <input type="hidden" name="type" value="baru">
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="iKoridor">Koridor</label>
-                                <select style="width: 100%" id="iKoridor" name="koridor" required></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="iNama">Nama Bus</label>
-                                <input type="text" class="form-control" id="iNama" name="nama">
-                            </div>
-                            <div class="form-group">
-                                <label for="iMerk">Merk Bus</label>
-                                <input type="text" class="form-control" id="iMerk" name="merk">
-                            </div>
-                            <div class="form-group">
-                                <label for="iNoPol">No Polisi</label>
-                                <input type="text" class="form-control" id="iNoPol" name="no_pol">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="iNama">Nama Device</label>
+                                        <input type="text" class="form-control" id="iNama" name="nama" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="iImei">IMEI Device</label>
+                                        <input type="text" class="form-control" id="iImei" name="imei" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer bg-whitesmoke">
@@ -62,24 +52,13 @@
 @section('script')
     <script type="text/javascript">
         let formData = $('#formData');
-        let iKoridor = $('#iKoridor');
 
         $(document).ready(function () {
-            iKoridor.select2({
-                ajax: {
-                    url: '{{ url('api/koridor') }}',
-                    dataType: 'json',
-                    data: function (params) {
-                        return {
-                            search: params.term,
-                        }
-                    }
-                }
-            });
             formData.submit(function (e) {
                 e.preventDefault();
+                // console.log($(this).serializeArray());
                 $.ajax({
-                    url: '{{ url('dashboard/master/bus/submit') }}',
+                    url: '{{ url('dashboard/master/device/submit') }}',
                     method: 'post',
                     data: $(this).serialize(),
                     success: function (response) {
@@ -98,7 +77,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Data Gagal Tersimpan',
-                                text: 'Silahkan coba lagi atau hubungi WAVE Solusi Indonesia',
+                                text: response,
                             });
                         }
                     },

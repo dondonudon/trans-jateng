@@ -29,10 +29,10 @@ class c_MasterUserManagement extends Controller
     }
 
     public function data() {
-        $data['data'] = DB::table('users')
+        return DB::table('users')
+            ->select('id','username','email','no_hp','status','system','name')
             ->whereNotIn('username',['dev'])
-            ->get();
-        return json_encode($data);
+            ->paginate(8);
     }
 
     public function submit(Request $request) {
@@ -47,8 +47,7 @@ class c_MasterUserManagement extends Controller
         if ($request->email !== null || $request->email !== '') {
             $email = $request->email;
             $dtUser = DB::table('users')
-                ->where('username','=',$username)
-                ->orWhere('email','=',$email);
+                ->where('username','=',$username);
         } else {
             $dtUser = DB::table('users')->where('username','=',$username);
         }
@@ -82,9 +81,9 @@ class c_MasterUserManagement extends Controller
                     ->where('username','=',$username)
                     ->update([
                         'name' => $name,
-                        'email' => $email,
+                        'system' => $system
                     ]);
-                DB::table('sys_permissions')->where('username','=',$username)->delete();
+                DB::table('sys_permission')->where('username','=',$username)->delete();
                 foreach ($permission as $p) {
                     $userPermission = new sysPermission();
                     $userPermission->username = $username;
@@ -97,7 +96,56 @@ class c_MasterUserManagement extends Controller
             return $result;
         } catch (\Exception $ex) {
             DB::rollBack();
-            return response()->json($ex);
+            $err = [$ex];
+            return response()->json($err);
+        }
+    }
+
+    public function resetPassword(Request $request) {
+        $username = $request->username;
+        try {
+            DB::beginTransaction();
+            DB::table('users')->where('username','=',$username)
+                ->update([
+                    'password' => Crypt::encryptString($username)
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return json_encode([$ex]);
+        }
+    }
+
+    public function disable(Request $request) {
+        $username = $request->username;
+        try {
+            DB::beginTransaction();
+            DB::table('users')->where('username','=',$username)
+                ->update([
+                    'status' => 0
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return json_encode([$ex]);
+        }
+    }
+
+    public function activate(Request $request) {
+        $username = $request->username;
+        try {
+            DB::beginTransaction();
+            DB::table('users')->where('username','=',$username)
+                ->update([
+                    'status' => 1
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return json_encode([$ex]);
         }
     }
 }

@@ -17,8 +17,8 @@ class c_MasterKoridor extends Controller
     }
 
     public function data() {
-        $data['data'] = msKoridor::all();
-        return json_encode($data);
+//        $data['data'] = msKoridor::all();
+        return DB::table('ms_koridor')->paginate(8);
     }
 
     public function edit($id) {
@@ -32,8 +32,10 @@ class c_MasterKoridor extends Controller
         $rute = $request->rute;
         $trip_a = $request->trip_a;
         $trip_b = $request->trip_b;
-        $lng = $request->lng;
-        $lat = $request->lat;
+        $lngA = $request->lng_a;
+        $latA = $request->lat_a;
+        $lngB = $request->lng_b;
+        $latB = $request->lat_b;
 
         try {
             DB::beginTransaction();
@@ -43,8 +45,10 @@ class c_MasterKoridor extends Controller
                 $msKoridor->rute = $rute;
                 $msKoridor->trip_a = $trip_a;
                 $msKoridor->trip_b = $trip_b;
-                $msKoridor->longitude = $lng;
-                $msKoridor->latitude = $lat;
+                $msKoridor->longitude_a = $lngA;
+                $msKoridor->latitude_a = $latA;
+                $msKoridor->longitude_b = $lngB;
+                $msKoridor->latitude_b = $latB;
                 $msKoridor->save();
             } elseif ($type == 'edit') {
                 DB::table('ms_koridor')
@@ -54,8 +58,10 @@ class c_MasterKoridor extends Controller
                         'rute' => $rute,
                         'trip_a' => $trip_a,
                         'trip_b' => $trip_b,
-                        'longitude' => $lng,
-                        'latitude' => $lat,
+                        'longitude_a' => $lngA,
+                        'latitude_a' => $latA,
+                        'longitude_b' => $lngB,
+                        'latitude_b' => $latB,
                     ]);
             }
             DB::commit();
@@ -63,6 +69,38 @@ class c_MasterKoridor extends Controller
         } catch (\Exception $ex) {
             DB::rollBack();
             return response()->json($ex);
+        }
+    }
+
+    public function disable(Request $request) {
+        $id = $request->id;
+        try {
+            DB::beginTransaction();
+            DB::table('ms_koridor')->where('id','=',$id)
+                ->update([
+                    'status' => 0
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return json_encode([$ex]);
+        }
+    }
+
+    public function activate(Request $request) {
+        $id = $request->id;
+        try {
+            DB::beginTransaction();
+            DB::table('ms_koridor')->where('id','=',$id)
+                ->update([
+                    'status' => 1
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return json_encode([$ex]);
         }
     }
 }

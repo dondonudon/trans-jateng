@@ -1,29 +1,21 @@
 @extends('dashboard.layout')
 
 @section('page_menu')
-    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
-            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah {{ ucfirst(request()->segment(3)) }}</div>
-        </a>
+    <li class="nav-item">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">{{ ucfirst(request()->segment(3)) }} Baru</a>
     </li>
-    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
-            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <span class="d-none d-lg-inline-block d-xl-inline-block">
-                 Daftar {{ ucfirst(request()->segment(3)) }}
-            </span>
-        </a>
+    <li class="nav-item active">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">List {{ ucfirst(request()->segment(3)) }}</a>
     </li>
 @endsection
 
 @section('content')
     <div class="section-body">
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-12">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Daftar {{ ucfirst(request()->segment(3)) }}</h4>
+                        <h4>List {{ ucfirst(request()->segment(3)) }}</h4>
                     </div>
                     <div class="card-body p-0">
                         <div class="thead-dark table-sm table-striped" id="listTable" style="width: 100%"></div>
@@ -66,7 +58,7 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: '{{ url('dashboard/master/bus') }}/'+status,
+                        url: '{{ url('dashboard/master/device') }}/'+status,
                         method: 'post',
                         data: data,
                         success: function (response) {
@@ -104,7 +96,6 @@
         const btnDisable = $('#btnDisable');
         const btnActivate = $('#btnActivate');
         let btnEdit = $('#btnEdit');
-
         let dataID;
 
         $(document).ready(function () {
@@ -113,7 +104,7 @@
                 layout: "fitDataStretch",
                 selectable: 1,
                 pagination: "remote",
-                ajaxURL: "{{ url('dashboard/master/bus/data') }}",
+                ajaxURL: "{{ url('dashboard/master/device/data') }}",
                 ajaxConfig: {
                     method: "POST",
                     headers: {
@@ -128,7 +119,7 @@
                         title:"Status",field:"status",width:100,
                         formatter: function (row) {
                             if (row.getData().status === 1) {
-                                row.getElement().style.backgroundColor = "rgba(0,155,0,0.8)";
+                                row.getElement().style.backgroundColor = "rgba(0,155,0,0.81)";
                                 row.getElement().style.color = "white";
                                 row.getElement().style.textAlign = "center";
                                 return 'Aktif';
@@ -140,12 +131,9 @@
                             }
                         }
                     },
-                    {title:"Koridor",field:"koridor"},
-                    {title:"Nama",field:"nama"},
-                    {title:"Merk",field:"merk"},
-                    {title:"No Pol",field:"no_pol"},
-                    {title:"Longitude",field:"longitude"},
-                    {title:"Latitude",field:"latitude"},
+                    {title:"Kode",field:"kode"},
+                    {title:"Device",field:"nama"},
+                    {title:"IMEI",field:"imei"},
                 ],
                 rowSelectionChanged:function (data,rows) {
                     if (data.length === 1) {
@@ -168,7 +156,7 @@
             btnEdit.click(function (e) {
                 e.preventDefault();
                 let id = listTable.getSelectedData()[0].id;
-                window.location = '{{ url('dashboard/master/bus/edit') }}/'+id;
+                window.location = '{{ url('dashboard/master/device/edit') }}/'+id;
             });
 
             btnDisable.click(function (e) {
@@ -177,10 +165,10 @@
                 changeStatus(
                     {id: id},
                     'disable',
-                    'Nonaktifkan bus ini?',
-                    'Nonaktifkan Bus',
-                    'Bus nonaktif!',
-                    'Gagal menonaktifkan bus, silahkan coba lagi!',
+                    'Nonaktifkan device ini?',
+                    'Nonaktifkan Device',
+                    'Device nonaktif!',
+                    'Gagal menonaktifkan device, silahkan coba lagi!',
                     listTable
                 );
             });
@@ -191,10 +179,10 @@
                 changeStatus(
                     {id: id},
                     'activate',
-                    'Aktifkan bus ini?',
-                    'Aktifkan Bus',
-                    'Bus aktif!',
-                    'Gagal mengaktifkan bus, silahkan coba lagi!',
+                    'Aktifkan device ini?',
+                    'Aktifkan Device',
+                    'Device aktif!',
+                    'Gagal mengaktifkan device, silahkan coba lagi!',
                     listTable
                 );
             });

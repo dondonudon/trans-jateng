@@ -1,11 +1,19 @@
 @extends('dashboard.layout')
 
 @section('page_menu')
-    <li class="nav-item active">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">{{ ucfirst(request()->segment(3)) }} Baru</a>
+    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
+            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
+            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah {{ ucfirst(request()->segment(3)) }}</div>
+        </a>
     </li>
-    <li class="nav-item">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">List {{ ucfirst(request()->segment(3)) }}</a>
+    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
+        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
+            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
+            <span class="d-none d-lg-inline-block d-xl-inline-block">
+                 Daftar {{ ucfirst(request()->segment(3)) }}
+            </span>
+        </a>
     </li>
 @endsection
 
@@ -38,9 +46,19 @@
                                 <label>Trip B</label>
                                 <input type="text" class="form-control" id="iTripB" name="trip_b">
                             </div>
-                            <div class="form-group">
-                                <label>Lokasi</label>
-                                <div style="width: 100%; height: 500px" id="mapContainer"></div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label>Lokasi A</label>
+                                        <div style="width: 100%; height: 500px" id="mapContainerA"></div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label>Lokasi B</label>
+                                        <div style="width: 100%; height: 500px" id="mapContainerB"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer bg-whitesmoke">
@@ -61,33 +79,62 @@
     <script type="text/javascript">
         let formData = $('#formData');
         let mapMarker = new H.map.Icon('{{ asset('assets/img/bus-stop.svg') }}', {size: {w: 32, h: 32}});
-        let lastMarker = null;
-        let lokasi = {lat: null, lng: null};
-        const map = new H.Map(
-            document.getElementById('mapContainer'),
+        let lastMarkerA = null;
+        let lastMarkerB = null;
+        let lokasi = {
+            a: {lat: null, lng: null},
+            b: {lat: null, lng: null}
+        };
+        const mapA = new H.Map(
+            document.getElementById('mapContainerA'),
             defaultLayers.vector.normal.map,
             {
                 zoom: 12,
                 center: { lat: -6.966667, lng: 110.416664 }
             });
-        const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-        const ui = H.ui.UI.createDefault(map, defaultLayers);
+        const behaviorA = new H.mapevents.Behavior(new H.mapevents.MapEvents(mapA));
+        const uiA = H.ui.UI.createDefault(mapA, defaultLayers);
+
+        const mapB = new H.Map(
+            document.getElementById('mapContainerB'),
+            defaultLayers.vector.normal.map,
+            {
+                zoom: 12,
+                center: { lat: -6.966667, lng: 110.416664 }
+            });
+        const behaviorB = new H.mapevents.Behavior(new H.mapevents.MapEvents(mapB));
+        const uiB = H.ui.UI.createDefault(mapB, defaultLayers);
 
         $(document).ready(function () {
-            map.addEventListener('tap',function (evt) {
-                let coords = map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
-                let marker = new H.map.Marker(coords, {icon: mapMarker});
+            mapA.addEventListener('tap',function (evt) {
+                let coordsA = mapA.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
+                let markerA = new H.map.Marker(coordsA, {icon: mapMarker});
 
-                if (lastMarker === null) {
-                    lastMarker = marker;
+                if (lastMarkerA === null) {
+                    lastMarkerA = markerA;
                 } else {
-                    map.removeObject(lastMarker);
-                    lastMarker = marker;
+                    mapA.removeObject(lastMarkerA);
+                    lastMarkerA = markerA;
                 }
-                map.addObject(marker);
-                map.setCenter(coords);
-                location.lat = coords.lat;
-                location.lng = coords.lng;
+                mapA.addObject(markerA);
+                mapA.setCenter(coordsA);
+                lokasi.a.lat = coordsA.lat;
+                lokasi.a.lng = coordsA.lng;
+            });
+            mapB.addEventListener('tap',function (evt) {
+                let coordsB = mapB.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
+                let markerB = new H.map.Marker(coordsB, {icon: mapMarker});
+
+                if (lastMarkerB === null) {
+                    lastMarkerB = markerB;
+                } else {
+                    mapB.removeObject(lastMarkerB);
+                    lastMarkerB = markerB;
+                }
+                mapB.addObject(markerB);
+                mapB.setCenter(coordsB);
+                lokasi.b.lat = coordsB.lat;
+                lokasi.b.lng = coordsB.lng;
             });
 
             formData.submit(function (e) {
@@ -98,8 +145,10 @@
                     rute: $('#iRute').val(),
                     trip_a: $('#iTripA').val(),
                     trip_b: $('#iTripB').val(),
-                    lat: location.lat,
-                    lng: location.lng,
+                    lat_a: lokasi.a.lat,
+                    lng_a: lokasi.a.lng,
+                    lat_b: lokasi.b.lat,
+                    lng_b: lokasi.b.lng,
                 };
                 $.ajax({
                     url: '{{ url('dashboard/master/koridor/submit') }}',

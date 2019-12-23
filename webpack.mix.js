@@ -23,6 +23,7 @@ mix
         'node_modules/moment/moment.js',
     ],'public/vendors/general.js')
     .scripts([
+        'node_modules/tabulator-tables/dist/js/tabulator.js',
         'node_modules/daterangepicker/daterangepicker.js',
         'node_modules/datatables.net/js/jquery.dataTables.js',
         'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js',
@@ -34,6 +35,7 @@ mix
     .styles([
         'node_modules/bootstrap/dist/css/bootstrap.css',
         'node_modules/daterangepicker/daterangepicker.css',
+        'node_modules/tabulator-tables/dist/css/bootstrap/tabulator_bootstrap4.css',
         'node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css',
         'node_modules/sweetalert2/dist/sweetalert2.css',
         'node_modules/select2/dist/css/select2.css',

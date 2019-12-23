@@ -23,42 +23,30 @@
             <div class="col-12 col-md-6 col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Edit {{ ucfirst(request()->segment(3)) }}</h4>
+                        <h4>Tambah {{ ucfirst(request()->segment(3)) }} Baru</h4>
                     </div>
                     <form id="formData">
-                        <input type="hidden" name="type" value="edit">
-                        <input type="hidden" id="iID" name="id" value="{{ $data->id }}">
+                        <input type="hidden" name="type" value="baru">
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="iKoridor">Koridor</label>
-                                <select style="width: 100%" id="iKoridor" name="koridor" required>
-                                    <option value="{{ $data->id_koridor }}">{{ $data->koridor }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="iNama">Nama Bus</label>
-                                <input type="text" class="form-control" id="iNama" name="nama" value="{{ $data->nama }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="iMerk">Merk Bus</label>
-                                <input type="text" class="form-control" id="iMerk" name="merk" value="{{ $data->merk }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="iNoPol">No Polisi</label>
-                                <input type="text" class="form-control" id="iNoPol" name="no_pol" value="{{ $data->no_pol }}">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="iJenis">Jenis</label>
+                                        <input type="text" class="form-control" id="iJenis" name="jenis">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="iHarga">Harga</label>
+                                        <input type="text" class="form-control" id="iHarga" name="harga">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer bg-whitesmoke">
                             <div class="row justify-content-end">
                                 <div class="col-sm-12 col-lg-2 mt-2 mb-lg-0">
-                                    <button type="button" class="btn btn-block btn-outline-danger" onclick="window.location = '{{ url()->previous() }}'">
-                                        <i class="fas fa-arrow-left mr-2"></i>Kembali
-                                    </button>
-                                </div>
-                                <div class="col-sm-12 col-lg-2 mt-2 mb-lg-0">
-                                    <button type="submit" id="btnBaru" class="btn btn-block btn-success">
-                                        <i class="fas fa-check mr-2"></i>Simpan
-                                    </button>
+                                    <button type="submit" class="btn btn-block btn-success"><i class="fas fa-check mr-2"></i>Simpan</button>
                                 </div>
                             </div>
                         </div>
@@ -72,27 +60,25 @@
 @section('script')
     <script type="text/javascript">
         let formData = $('#formData');
-        let iKoridor = $('#iKoridor');
+        const iJenis = $('#iJenis');
+        const iHarga = new Cleave('#iHarga', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+        });
 
         $(document).ready(function () {
-            iKoridor.select2({
-                ajax: {
-                    url: '{{ url('api/koridor') }}',
-                    dataType: 'json',
-                    data: function (params) {
-                        return {
-                            search: params.term,
-                        }
-                    }
-                }
-            });
-
             formData.submit(function (e) {
                 e.preventDefault();
+                let jenis = iJenis.val();
+                let harga = iHarga.getRawValue();
                 $.ajax({
-                    url: '{{ url('dashboard/master/bus/submit') }}',
+                    url: '{{ url('dashboard/master/penumpang/submit') }}',
                     method: 'post',
-                    data: $(this).serialize(),
+                    data: {
+                        type: 'baru',
+                        jenis: jenis,
+                        harga: harga
+                    },
                     success: function (response) {
                         if (response === 'success') {
                             Swal.fire({
@@ -101,7 +87,7 @@
                                 showConfirmButton: false,
                                 timer: 1000,
                                 onClose: function () {
-                                    window.location = '{{ url()->previous() }}';
+                                    window.location.reload();
                                 }
                             });
                         } else {
@@ -109,9 +95,12 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Data Gagal Tersimpan',
-                                text: 'Silahkan coba lagi atau hubungi WAVE Solusi Indonesia',
+                                text: response,
                             });
                         }
+                    },
+                    error: function (response) {
+                        console.log(response);
                     }
                 })
             })

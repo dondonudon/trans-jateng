@@ -17,11 +17,10 @@ class c_MasterBus extends Controller
     }
 
     public function data() {
-        $data['data'] = DB::table('ms_bus')
-            ->select('ms_bus.id','ms_koridor.koridor','nama','merk','no_pol','ms_bus.longitude','ms_bus.latitude')
+        return DB::table('ms_bus')
+            ->select('ms_bus.status','ms_bus.id','ms_koridor.koridor','nama','merk','no_pol','ms_bus.longitude','ms_bus.latitude')
             ->join('ms_koridor','ms_bus.id_koridor','=','ms_koridor.id')
-            ->get();
-        return json_encode($data);
+            ->paginate(8);
     }
 
     public function edit($id) {
@@ -64,6 +63,38 @@ class c_MasterBus extends Controller
         } catch (\Exception $ex) {
             DB::rollBack();
             return response()->json($ex);
+        }
+    }
+
+    public function disable(Request $request) {
+        $id = $request->id;
+        try {
+            DB::beginTransaction();
+            DB::table('ms_bus')->where('id','=',$id)
+                ->update([
+                    'status' => 0
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return json_encode([$ex]);
+        }
+    }
+
+    public function activate(Request $request) {
+        $id = $request->id;
+        try {
+            DB::beginTransaction();
+            DB::table('ms_bus')->where('id','=',$id)
+                ->update([
+                    'status' => 1
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return json_encode([$ex]);
         }
     }
 }
