@@ -79,3 +79,4 @@ Route::get('penumpang/{id}',function ($id) {
 
 Route::post('login','c_Android@login');
 Route::post('sync','c_Android@sync');
+Route::post('problem','c_Android@problemReport');

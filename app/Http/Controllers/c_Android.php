@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\problem;
 use App\transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -76,6 +77,38 @@ class c_Android extends Controller
         } catch (\Exception $ex) {
 //            return response()->json($ex);
             dd('Exception Block',$ex);
+        }
+    }
+
+    /*
+     * Problem Report
+     */
+    public function problemReport(Request $request) {
+        $koridor = $request->koridor;
+        $bus = $request->bus;
+        $ket = $request->keterangan;
+        $user = $request->username;
+        $lng = $request->longitude ?? '';
+        $lat = $request->latitude ?? '';
+        $trip = $request->trip;
+        $shift = $request->shift;
+        try {
+            DB::beginTransaction();
+            $report = new problem();
+            $report->id_koridor = $koridor;
+            $report->id_bus = $bus;
+            $report->keterangan = $ket;
+            $report->username = $user;
+            $report->longitude = $lng;
+            $report->latitude = $lat;
+            $report->trip = $trip;
+            $report->shift = $shift;
+            $report->save();
+            DB::commit();
+            return response()->json(['status'=>'success']);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return response()->json(['status'=>'failed','error'=>$ex]);
         }
     }
 }
