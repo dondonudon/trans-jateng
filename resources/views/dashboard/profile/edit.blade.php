@@ -15,7 +15,7 @@
             <div class="col-12 col-md-12 col-lg-5">
                 <div class="card profile-widget">
                     <div class="profile-widget-header">
-                        <img alt="image" src="{{ ($data['profile']->foto !== null) ? url('storage/'.$data['profile']->foto) : asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle profile-widget-picture">
+                        <img alt="image" src="{{ (isset($data['profile']->foto)) ? url('storage/'.$data['profile']->foto) : asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle profile-widget-picture">
                         <div class="profile-widget-items">
                             <div class="profile-widget-item">
                                 <div class="profile-widget-item-label">Terdaftar sejak</div>
