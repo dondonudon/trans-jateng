@@ -18,7 +18,6 @@
         $.ajax({
             url: '{{ url('logout') }}',
             method: 'post',
-            data: $(this).serialize(),
             success: function (response) {
                 if (response === 'success') {
                     window.location.reload();

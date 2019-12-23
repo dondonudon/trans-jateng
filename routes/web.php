@@ -19,7 +19,7 @@ Route::get('payment/gopay',function () {
 });
 Route::get('login','c_Login@index');
 Route::post('login/submit','c_Login@submit');
-Route::get('logout','c_Login@logout');
+Route::post('logout','c_Login@logout');
 Route::get('reset-password','c_Login@resetPassword');
 Route::post('reset-password/submit','c_Login@resetPasswordSubmit');
 Route::get('storage/{filename}',function ($filename) {
