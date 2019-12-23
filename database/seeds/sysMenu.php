@@ -125,7 +125,7 @@ class sysMenu extends Seeder
             ],
         ];
         foreach ($data as $d) {
-            DB::table('sys_menu_group')->insert($d);
+            DB::table('sys_menus')->insert($d);
         }
     }
 }
