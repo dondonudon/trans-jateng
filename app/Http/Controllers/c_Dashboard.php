@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class c_Dashboard extends Controller
 {
     public static function sidebar() {
-        $username = \request()->session()->get('username');
+        $username = request()->session()->get('username');
 
         if ($username == 'dev') {
             $group = DB::table('sys_menus')
@@ -37,20 +37,20 @@ class c_Dashboard extends Controller
                 ];
             }
         } else {
-            $group = DB::table('sys_permissions')
+            $group = DB::table('sys_permission')
                 ->select('sys_menu_groups.id','sys_menu_groups.name','sys_menu_groups.segment_name','sys_menu_groups.icon','sys_menu_groups.ord','sys_menu_groups.created_at','sys_menu_groups.status','sys_menu_groups.updated_at')
-                ->join('sys_menus','sys_permissions.id_menu','=','sys_menus.id')
+                ->join('sys_menus','sys_permission.id_menu','=','sys_menus.id')
                 ->join('sys_menu_groups','sys_menus.id_group','=','sys_menu_groups.id')
-                ->where('sys_permissions.username','=',$username)
+                ->where('sys_permission.username','=',$username)
                 ->where('sys_menu_groups.status','<>',1)
                 ->orderBy('sys_menu_groups.ord','asc')
                 ->distinct()
                 ->get();
 
-            $dtMenu = DB::table('sys_permissions')
+            $dtMenu = DB::table('sys_permission')
                 ->select('sys_menus.id', 'sys_menus.id_group', 'sys_menus.name', 'sys_menus.segment_name', 'sys_menus.url', 'sys_menus.ord','sys_menus.status', 'sys_menus.created_at', 'sys_menus.updated_at')
-                ->join('sys_menus','sys_permissions.id_menu','=','sys_menus.id')
-                ->where('sys_permissions.username','=',$username)
+                ->join('sys_menus','sys_permission.id_menu','=','sys_menus.id')
+                ->where('sys_permission.username','=',$username)
                 ->where('sys_menus.status','<>',1)
                 ->orderBy('sys_menus.ord','asc')
                 ->get();
