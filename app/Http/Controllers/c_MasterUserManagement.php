@@ -62,6 +62,7 @@ class c_MasterUserManagement extends Controller
                     $user->password = Crypt::encryptString($username);
                     $user->name = $name;
                     $user->email = $email;
+                    $user->no_hp = '';
                     $user->system = $system;
                     $user->save();
 
