@@ -29,7 +29,7 @@ class c_Android extends Controller
                     $result = [
                         'status' => 'success',
                         'data' => DB::table('users')
-                            ->select('username','name','email','no_hp','created_at')
+                            ->select('id','username','name','email','no_hp','created_at')
                             ->where('username','=',$username)->first()
                     ];
                 } else {
@@ -51,8 +51,8 @@ class c_Android extends Controller
     }
 
     public function sync(Request $request) {
-        $data = json_decode($request->data);
         try {
+            $data = json_decode($request->data);
             DB::beginTransaction();
             foreach ($data as $d) {
                 $trn = new transaksi();
@@ -60,7 +60,7 @@ class c_Android extends Controller
                 $trn->tgl_transaksi = $d->tgl;
                 $trn->jam_transaksi = $d->jam;
                 $trn->id_penumpang = $d->penumpang;
-                $trn->id_bus = $d->bus;
+                $trn->id_bus = $d->id_bus;
                 $trn->opsi_bayar = $d->opsi_bayar;
                 $trn->harga = $d->harga;
                 $trn->username = $d->username;
@@ -75,8 +75,8 @@ class c_Android extends Controller
             ];
             return response()->json($result);
         } catch (\Exception $ex) {
-//            return response()->json($ex);
-            dd('Exception Block',$ex);
+            DB::rollBack();
+            return response()->json([$ex]);
         }
     }
 

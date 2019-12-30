@@ -12,11 +12,31 @@
 */
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
+//Route::get('print/{text}',function ($text) {
+//    $data['system'] = 'Trans Jateng';
+//    $data['qrcode'] = $text;
+//    $pdf = PDF::loadView('dashboard.print',$data)->setPaper(array(0,0,200,164),'landscape');
+//    return $pdf->stream(date('Ymd').'.pdf');
+//});
 Route::get('payment/gopay',function () {
     return view('dashboard.gopay');
 });
+Route::get('generate/qrcode/png/{text}',function ($text) {
+    $image = QRCode::format('png')
+        ->merge('assets/logo/without-name/logo-1000.png', 0.5, true)
+        ->size(500)->errorCorrection('H')
+        ->generate($text);
+    return response($image)->header('Content-type','image/png');
+});
+Route::get('generate/qrcode/svg/{text}',function ($text) {
+    $image = QRCode::format('svg')
+//        ->merge('assets/logo/without-name/logo-1000.png', 0.5, true)
+        ->size(500)->errorCorrection('H')
+        ->generate($text);
+    return response($image)->header('Content-type','image/svg+xml');
+});
+
 Route::get('login','c_Login@index');
 Route::post('login/submit','c_Login@submit');
 Route::post('logout','c_Login@logout');
@@ -97,6 +117,27 @@ Route::middleware(['check.login'])->group(function () {
         Route::post('dashboard/master/device/submit','c_MasterDevice@submit');
         Route::post('dashboard/master/device/disable','c_MasterDevice@disable');
         Route::post('dashboard/master/device/activate','c_MasterDevice@activate');
+
+        Route::get('dashboard/laporan/transaksi-petugas','c_LaporanTransaksiPetugas@index');
+        Route::post('dashboard/laporan/transaksi-petugas/data','c_LaporanTransaksiPetugas@data');
+        Route::get('dashboard/laporan/transaksi-petugas/export/pdf/{tgl}','c_LaporanTransaksiPetugas@exportPDF');
+
+        Route::get('dashboard/laporan/top-transaksi-petugas','c_LaporanTopTransaksiPetugas@index');
+        Route::post('dashboard/laporan/top-transaksi-petugas/data','c_LaporanTopTransaksiPetugas@data');
+        Route::get('dashboard/laporan/top-transaksi-petugas/export/pdf/{tgl}','c_LaporanTopTransaksiPetugas@exportPDF');
+
+        Route::get('dashboard/laporan/transaksi-per-jenis','c_LaporanTransaksiPerJenis@index');
+        Route::post('dashboard/laporan/transaksi-per-jenis/data','c_LaporanTransaksiPerJenis@data');
+        Route::post('dashboard/laporan/transaksi-per-jenis/data-offline','c_LaporanTransaksiPerJenis@dataOffline');
+        Route::get('dashboard/laporan/transaksi-per-jenis/export/pdf/{tgl}','c_LaporanTransaksiPerJenis@exportPDF');
+
+        Route::get('dashboard/laporan/transaksi-per-koridor','c_LaporanTransaksiPerKoridor@index');
+        Route::post('dashboard/laporan/transaksi-per-koridor/data','c_LaporanTransaksiPerKoridor@data');
+        Route::get('dashboard/laporan/transaksi-per-koridor/export/pdf/{start}/{end}','c_LaporanTransaksiPerKoridor@exportPDF');
+
+        Route::get('dashboard/laporan/transaksi-bus-shelter','c_LaporanTransaksiBusShelter@index');
+        Route::post('dashboard/laporan/transaksi-bus-shelter/data','c_LaporanTransaksiBusShelter@data');
+        Route::get('dashboard/laporan/transaksi-bus-shelter/export/pdf/{start}/{end}','c_LaporanTransaksiBusShelter@exportPDF');
 
         Route::get('dashboard/penjualan/tiket-offline','c_PenjualanTiketOffline@index');
         Route::post('dashboard/penjualan/tiket-offline/submit','c_PenjualanTiketOffline@submit');
