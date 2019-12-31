@@ -141,5 +141,9 @@ Route::middleware(['check.login'])->group(function () {
 
         Route::get('dashboard/penjualan/tiket-offline','c_PenjualanTiketOffline@index');
         Route::post('dashboard/penjualan/tiket-offline/submit','c_PenjualanTiketOffline@submit');
+
+        Route::get('dashboard/problem/bus-report','c_ProblemBusReport@index');
+        Route::post('dashboard/problem/bus-report/data','c_ProblemBusReport@data');
+        Route::get('dashboard/problem/bus-report/export/pdf/{start}/{end}','c_ProblemBusReport@exportPDF');
     });
 });
