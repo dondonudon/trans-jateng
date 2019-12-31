@@ -25,11 +25,13 @@ Route::get('koridor',function () {
         $koridor['results'] = DB::table('ms_koridor')
             ->select('id','koridor as text','koridor as koridor','rute','trip_a','trip_b')
             ->where('koridor','like','%'.$_GET['search'].'%')
+            ->where('status','=','1')
             ->orderBy('koridor','asc')
             ->get();
     } else {
         $koridor['results'] = DB::table('ms_koridor')
             ->select('id','koridor as text','koridor as koridor','rute','trip_a','trip_b')
+            ->where('status','=','1')
             ->orderBy('koridor','asc')
             ->get();
     }
@@ -42,11 +44,13 @@ Route::get('bus',function () {
         $koridor['results'] = DB::table('ms_bus')
             ->select('id','nama as text','merk','no_pol','id_koridor')
             ->where('nama','like','%'.$_GET['search'].'%')
+            ->where('status','=','1')
             ->orderBy('nama','asc')
             ->get();
     } else {
         $koridor['results'] = DB::table('ms_bus')
             ->select('id','nama as text','merk','no_pol','id_koridor')
+            ->where('status','=','1')
             ->orderBy('nama','asc')
             ->get();
     }
@@ -56,24 +60,32 @@ Route::get('bus',function () {
 Route::get('penumpang',function () {
     $date = date('Y-m-d');
     $Penumpang = [];
+    $libur = DB::table('ms_libur')->where('tanggal','=',$date)->pluck('id_penumpang');
+    $libur[] = 99;
     if (isset($_GET['search'])) {
         $Penumpang['results'] = DB::table('ms_penumpang')
             ->select('id','jenis as text','harga')
             ->where('jenis','like','%'.$_GET['search'].'%')
-            ->whereNotIn('id',DB::table('ms_libur')->where('tanggal','=',$date)->pluck('id_penumpang'))
+            ->where('status','=','1')
+            ->whereNotIn('id',$libur)
             ->orderBy('jenis','asc')
             ->get();
     } else {
         $Penumpang['results'] = DB::table('ms_penumpang')
             ->select('id','jenis as text','harga')
-            ->whereNotIn('id',DB::table('ms_libur')->where('tanggal','=',$date)->pluck('id_penumpang'))
+            ->whereNotIn('id',$libur)
+            ->where('status','=','1')
             ->orderBy('jenis','asc')
             ->get();
     }
     return $Penumpang;
 });
 Route::get('penumpang/{id}',function ($id) {
-    $dtPenumpang = DB::table('ms_penumpang')->select('harga')->where('id','=',$id)->first();
+    $dtPenumpang = DB::table('ms_penumpang')
+        ->select('harga')
+        ->where('id','=',$id)
+        ->where('status','=','1')
+        ->first();
     return $dtPenumpang->harga;
 });
 
