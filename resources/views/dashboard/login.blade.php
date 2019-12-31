@@ -111,7 +111,7 @@
         logo.css('width','40%');
         loginCard.removeClass('d-none');
 
-        document.getElementById('username').autofocus;
+        document.getElementById('username').autofocus = true;
 
         formLogin.submit(function (e) {
             btnSubmit.addClass('d-none');
