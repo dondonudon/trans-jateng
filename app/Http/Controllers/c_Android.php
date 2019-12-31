@@ -16,21 +16,25 @@ class c_Android extends Controller
     public function login(Request $request) {
         $username = $request->username;
         $password = $request->password;
+        $imei = $request->imei;
         try {
             $result = [];
+            $device = DB::table('ms_devices')->where('imei','=',$imei);
             $dbUser = DB::table('users')
                 ->where([
-                    ['username','=',$username]
+                    ['username','=',$username],
+                    ['status','=','1'],
                 ])
                 ->whereIn('system',['0','1']);
-            if ($dbUser->exists()) {
+            if ($dbUser->exists() && $device->exists()) {
                 $dtUser = $dbUser->first();
                 if (Crypt::decryptString($dtUser->password) == $password) {
                     $result = [
                         'status' => 'success',
                         'data' => DB::table('users')
                             ->select('id','username','name','email','no_hp','created_at')
-                            ->where('username','=',$username)->first()
+                            ->where('username','=',$username)->first(),
+                        'device' => $device->first()
                     ];
                 } else {
                     $result = [
