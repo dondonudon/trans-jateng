@@ -14,7 +14,6 @@ class s_MsDevice extends Seeder
     {
         $data = [
             [
-                'id' => '1',
                 'nama' => 'DEVICE I',
                 'imei' => '99001024535470',
                 'kode' => 'D0001',
@@ -23,7 +22,6 @@ class s_MsDevice extends Seeder
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
-                'id' => '2',
                 'nama' => 'DEVICE II',
                 'imei' => '99001024535470',
                 'kode' => 'D0002',
