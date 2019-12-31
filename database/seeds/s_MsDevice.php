@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class s_MsDevice extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $data = [
+            [
+                'id' => '1',
+                'nama' => 'DEVICE I',
+                'imei' => '99001024535470',
+                'kode' => 'D0001',
+                'status' => '1',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id' => '2',
+                'nama' => 'DEVICE II',
+                'imei' => '99001024535470',
+                'kode' => 'D0002',
+                'status' => '1',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ],
+        ];
+        foreach ($data as $d) {
+            DB::table('ms_devices')
+                ->insert($d);
+        }
+    }
+}
