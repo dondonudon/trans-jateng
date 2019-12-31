@@ -38,7 +38,7 @@
                             <form id="formLogin" class="needs-validation" novalidate="">
                                 <div class="form-group">
                                     <label for="username">Username</label>
-                                    <input id="username" type="text" class="form-control" name="username" tabindex="1" style="text-align: center" required autofocus>
+                                    <input id="username" type="text" class="form-control" name="username" tabindex="1" style="text-align: center" required>
                                     <div class="invalid-feedback">
                                         Please fill in your username
                                     </div>
@@ -110,6 +110,9 @@
         pageLoading.addClass('d-none');
         logo.css('width','40%');
         loginCard.removeClass('d-none');
+
+        document.getElementById('username').autofocus;
+
         formLogin.submit(function (e) {
             btnSubmit.addClass('d-none');
             loading.removeClass('d-none');
