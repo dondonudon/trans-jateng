@@ -55,7 +55,7 @@ class sysMenu extends Seeder
             ],
             [
                 'id_group' => '2',
-                'name' => 'koridor',
+                'name' => 'Koridor',
                 'segment_name' => 'koridor',
                 'url' => 'dashboard/master/koridor',
                 'ord' => '2',
