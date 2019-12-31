@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password',255);
             $table->string('no_hp',15);
             $table->tinyInteger('system')->comment('0:all, 1:android, 2:web');
+            $table->tinyInteger('status')->default(1)->comment('0:nonaktif, 1:aktif');
             $table->rememberToken();
             $table->timestamps();
         });
