@@ -31,6 +31,7 @@ mix
         'node_modules/numeral/src/numeral.js',
         'node_modules/cleave.js/dist/cleave.js',
         'node_modules/select2/dist/js/select2.js',
+        'node_modules/chart.js/dist/Chart.js',
     ], 'public/vendors/plugin.js')
     .styles([
         'node_modules/bootstrap/dist/css/bootstrap.css',

@@ -143,6 +143,6 @@ Route::middleware(['check.login'])->group(function () {
 
         Route::get('dashboard/problem/bus-report','c_ProblemBusReport@index');
         Route::post('dashboard/problem/bus-report/data','c_ProblemBusReport@data');
-        Route::get('dashboard/problem/bus-report/export/pdf/{start}/{end}','c_ProblemBusReport@exportPDF');
+        Route::get('dashboard/problem/bus-report/view/{id}','c_ProblemBusReport@detail');
     });
 });

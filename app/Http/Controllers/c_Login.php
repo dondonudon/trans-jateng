@@ -31,11 +31,13 @@ class c_Login extends Controller
             if ($dtUser->exists()) {
                 $user = $dtUser->first();
                 if (Crypt::decryptString($user->password) == $password) {
-                    $request->session()->put('status','logged in');
-                    $request->session()->put('username',$username);
-                    $request->session()->put('name',$user->name);
-                    $request->session()->put('userid',$user->id);
-                    $request->session()->put('created_at',$user->created_at);
+                    $request->session()->put([
+                        'status' => 'logged in',
+                        'username' => $username,
+                        'name' => $user->name,
+                        'user_id' => $user->id,
+                        'created_at' => $user->created_at
+                    ]);
                     $result = 'success';
                 } else {
                     $result = 'Password salah.';
