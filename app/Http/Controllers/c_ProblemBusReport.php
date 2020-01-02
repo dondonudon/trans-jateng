@@ -13,13 +13,13 @@ class c_ProblemBusReport extends Controller
     public function dataset($start,$end) {
         try {
             return DB::table('problems')
-                ->select('problems.keterangan','ms_bus.nama as bus','ms_koridor.koridor','users.name','longitude','latitude','trip','shift'
+                ->select( 'problems.id','problems.keterangan','ms_bus.nama as bus','ms_koridor.koridor','users.name','problems.longitude','problems.latitude','trip','shift','problems.status'
                 )
-                ->leftJoin('users','transaksi.username','=','users.username')
-                ->leftJoin('ms_bus','transaksi.id_bus','=','ms_bus.id')
-                ->leftJoin('ms_koridor','transaksi.id_koridor','=','ms_koridor.id')
-                ->whereBetween('tgl_transaksi',[$start, $end.' 23:59:59'])
-                ->orderBy('problems.created-at','desc')
+                ->leftJoin('users','problems.username','=','users.username')
+                ->leftJoin('ms_bus','problems.id_bus','=','ms_bus.id')
+                ->leftJoin('ms_koridor','problems.id_koridor','=','ms_koridor.id')
+                ->whereBetween('problems.created_at',[$start, $end.' 23:59:59'])
+                ->orderBy('problems.created_at','desc')
                 ->paginate(8);
         } catch (\Exception $ex) {
             return response()->json([$ex]);
@@ -27,7 +27,7 @@ class c_ProblemBusReport extends Controller
     }
 
     public function index() {
-        return view('dashboard.laporan.transaksi-per-koridor.index');
+        return view('dashboard.problem.bus-report.index');
     }
 
     public function data(Request $request) {
@@ -40,12 +40,23 @@ class c_ProblemBusReport extends Controller
         }
     }
 
-    public function exportPDF($start,$end) {
+    public function detail($id) {
         try {
-            $trn['data'] = $this->dataset($start,$end);
-            $pdf = PDF::loadView('dashboard.laporan.transaksi-per-koridor.pdf',$trn)->setPaper('a4','portrait');
-            return $pdf->stream('report-bbn-per-periode.pdf');
+            DB::beginTransaction();
+            $dataset = DB::table('problems')
+                ->select( 'problems.id','problems.keterangan','ms_bus.nama as bus','ms_koridor.koridor','users.name','problems.longitude','problems.latitude','trip','shift'
+                )
+                ->leftJoin('users','problems.username','=','users.username')
+                ->leftJoin('ms_bus','problems.id_bus','=','ms_bus.id')
+                ->leftJoin('ms_koridor','problems.id_koridor','=','ms_koridor.id')
+                ->where('problems.id','=',$id);
+            $dataset->update([
+                'problems.status' => 1
+            ]);
+            DB::commit();
+            return view('dashboard.problem.bus-report.detail')->with('data',$dataset->first());
         } catch (\Exception $ex) {
+            DB::rollBack();
             return response()->json($ex);
         }
     }

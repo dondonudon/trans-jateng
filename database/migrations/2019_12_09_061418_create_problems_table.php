@@ -23,6 +23,7 @@ class CreateProblemsTable extends Migration
             $table->string('latitude',25);
             $table->string('trip',5);
             $table->integer('shift');
+            $table->tinyInteger('status')->default(0)->comment('0:belum dilihat, 1:sudah dilihat');
             $table->timestamps();
         });
     }
