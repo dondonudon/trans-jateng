@@ -22,20 +22,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('payment/gopay',function () {
     return view('dashboard.gopay');
 });
-Route::get('generate/qrcode/png/{text}',function ($text) {
-    $image = QRCode::format('png')
-        ->merge('assets/logo/without-name/logo-1000.png', 0.5, true)
-        ->size(500)->errorCorrection('H')
-        ->generate($text);
-    return response($image)->header('Content-type','image/png');
-});
-Route::get('generate/qrcode/svg/{text}',function ($text) {
-    $image = QRCode::format('svg')
+//Route::get('generate/qrcode/png/{text}',function ($text) {
+//    $image = QRCode::format('png')
 //        ->merge('assets/logo/without-name/logo-1000.png', 0.5, true)
-        ->size(500)->errorCorrection('H')
-        ->generate($text);
-    return response($image)->header('Content-type','image/svg+xml');
-});
+//        ->size(500)->errorCorrection('H')
+//        ->generate($text);
+//    return response($image)->header('Content-type','image/png');
+//});
+//Route::get('generate/qrcode/svg/{text}',function ($text) {
+//    $image = QRCode::format('svg')
+//        ->size(500)->errorCorrection('H')
+//        ->generate($text);
+//    return response($image)->header('Content-type','image/svg+xml');
+//});
 
 Route::get('login','c_Login@index');
 Route::post('login/submit','c_Login@submit');
