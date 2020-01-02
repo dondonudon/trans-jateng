@@ -73,6 +73,7 @@
             let listTable = new Tabulator("#listTable", {
                 layout: "fitDataStretch",
                 selectable: 1,
+                placeholder: 'No Data Available',
                 pagination: "remote",
                 ajaxURL: "{{ url('dashboard/master/user-management/data') }}",
                 ajaxConfig: {

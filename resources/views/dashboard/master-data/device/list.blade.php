@@ -103,6 +103,7 @@
                 resizableColumns: false,
                 layout: "fitDataStretch",
                 selectable: 1,
+                placeholder: 'No Data Available',
                 pagination: "remote",
                 ajaxURL: "{{ url('dashboard/master/device/data') }}",
                 ajaxConfig: {

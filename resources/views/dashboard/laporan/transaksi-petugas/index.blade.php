@@ -58,7 +58,6 @@
             });
 
             let listTable = new Tabulator("#listTable", {
-                height: '70vh',
                 resizableColumns: false,
                 placeholder: 'No Data Available',
                 layout: "fitDataStretch",

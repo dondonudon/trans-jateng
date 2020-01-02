@@ -60,7 +60,6 @@
         $(document).ready(function () {
 
             let listTable = new Tabulator("#listTable", {
-                height: '50vh',
                 resizableColumns: false,
                 columnHeaderVertAlign: 'center',
                 headerSort: false,

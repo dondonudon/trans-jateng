@@ -68,6 +68,7 @@
                 resizableColumns: false,
                 layout: "fitData",
                 selectable: 1,
+                placeholder: 'No Data Available',
                 pagination: "remote",
                 ajaxURL: "{{ url('dashboard/master/koridor/data') }}",
                 ajaxConfig: {
