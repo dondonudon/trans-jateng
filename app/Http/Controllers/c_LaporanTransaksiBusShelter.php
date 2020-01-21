@@ -11,7 +11,7 @@ class c_LaporanTransaksiBusShelter extends Controller
     /*
     * Dataset
     */
-    public function dataset($start,$end) {
+    public function dataset($tgl) {
         try {
             return DB::table('transaksi')
                 ->select(
@@ -46,7 +46,8 @@ class c_LaporanTransaksiBusShelter extends Controller
                 ->leftJoin('ms_bus','transaksi.id_bus','=','ms_bus.id')
                 ->leftJoin('ms_koridor','transaksi.id_koridor','=','ms_koridor.id')
 //                ->where('opsi_bayar','=','tiket manual')
-                ->whereBetween('transaksi.tgl_transaksi',[$start,$end." 23:59:59"])
+                ->where('transaksi.tgl_transaksi','=',$tgl)
+                ->orderBy('total_rupiah','desc')
                 ->groupBy('transaksi.id_bus','ms_bus.nama','ms_koridor.koridor')
                 ->get();
         } catch (\Exception $ex) {
@@ -59,17 +60,16 @@ class c_LaporanTransaksiBusShelter extends Controller
     }
 
     public function data(Request $request) {
-        $start = $request->start;
-        $end = $request->end;
+        $tgl = $request->tgl;
         try {
-            return $this->dataset($start,$end);
+            return $this->dataset($tgl);
         } catch (\Exception $ex) {
             return response()->json([$ex]);
         }
     }
 
-    public function exportPDF($start,$end) {
-        $trn['data'] = $this->dataset($start,$end);
+    public function exportPDF($tgl) {
+        $trn['data'] = $this->dataset($tgl);
         try {
             $pdf = PDF::loadView('dashboard.laporan.transaksi-bus-shelter.pdf',$trn)->setPaper('a4','landscape');
             return $pdf->stream('report-bbn-per-periode.pdf');

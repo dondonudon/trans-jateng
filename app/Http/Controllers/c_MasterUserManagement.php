@@ -28,10 +28,22 @@ class c_MasterUserManagement extends Controller
         return view('dashboard.master-data.user-management.edit')->with('data',$data)->with('check',$check);
     }
 
-    public function data() {
+    public function data(Request $request) {
+        $filters = $request->filters;
+        $data = [
+            'where' => []
+        ];
+        if ($filters !== null) {
+            foreach ($filters as $f) {
+                $data['where'][] = [
+                    $f['field'],$f['type'],'%'.$f['value'].'%'
+                ];
+            }
+        }
         return DB::table('users')
             ->select('id','username','email','no_hp','status','system','name')
             ->whereNotIn('username',['dev'])
+            ->where($data['where'])
             ->paginate(8);
     }
 

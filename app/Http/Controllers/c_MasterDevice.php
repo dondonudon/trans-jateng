@@ -18,8 +18,20 @@ class c_MasterDevice extends Controller
     }
 
     public function data(Request $request) {
-        return DB::table('ms_devices')->paginate(8);
-//        return msDevice::all()->paginate(10)->toJson();
+        $filters = $request->filters;
+        $data = [
+            'where' => []
+        ];
+        if ($filters !== null) {
+            foreach ($filters as $f) {
+                $data['where'][] = [
+                    $f['field'],$f['type'],'%'.$f['value'].'%'
+                ];
+            }
+        }
+        return DB::table('ms_devices')
+            ->where($data['where'])
+            ->paginate(8);
     }
 
     public function edit($id) {

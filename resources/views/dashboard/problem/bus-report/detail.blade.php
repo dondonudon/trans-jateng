@@ -15,6 +15,9 @@
                             <div class="row">
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                     <dl class="row">
+                                        <dt class="col-sm-3">Tanggal - Jam</dt>
+                                        <dd class="col-sm-9">{{ date('d F Y - H:i:s',strtotime($data->created_at)) }}</dd>
+
                                         <dt class="col-sm-3">Petugas</dt>
                                         <dd class="col-sm-9">{{ $data->name }}</dd>
 
@@ -64,33 +67,34 @@
 @section('script')
     <script type="text/javascript">
         let btnMaps = $('#btnMaps');
+        let myLocation = { lat: -6.966667, lng: 110.416664 };
+        let lokasi = {lat: Number('{{ $data->latitude }}'), lng: Number('{{ $data->longitude }}')};
 
-        let mapMarker = new H.map.Icon('{{ asset('assets/img/bus.svg') }}', {size: {w: 32, h: 32}});
-        let lokasi = {
-            lat: '{{ $data->latitude }}',
-            lng: '{{ $data->longitude }}'
-        };
-        const map = new H.Map(
-            document.getElementById('mapContainer'),
-            defaultLayers.vector.normal.map,
-            {
-                zoom: 14,
-                center: { lat: -6.966667, lng: 110.416664 }
+        function initMap() {
+            let map = new google.maps.Map(document.getElementById('mapContainer'), {
+                center: myLocation,
+                zoom: 12
             });
-        const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-        const ui = H.ui.UI.createDefault(map, defaultLayers);
+
+            placeMarkerAndPanTo(lokasi, map);
+        }
+
+        function placeMarkerAndPanTo(latLng, map) {
+            mapMarker = new google.maps.Marker({
+                position: latLng,
+                map: map
+            });
+            map.panTo(latLng);
+            mapMarkers = mapMarker;
+        }
+        let mapMarkers = null;
 
         $(document).ready(function () {
-            if (lokasi.lat !== '') {
-                let marker = new H.map.Marker(lokasi, {icon: mapMarker});
-                map.addObject(marker);
-                map.setCenter(lokasi);
-            }
-
             btnMaps.click(function (e) {
                 e.preventDefault();
                 window.open('https://www.google.com/maps/search/?api=1&query='+lokasi.lat+','+lokasi.lng);
             });
         });
     </script>
+    @include('dashboard._partials.google-maps')
 @endsection

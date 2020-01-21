@@ -1,4 +1,5 @@
 {
+    "/style.css": "/style.css",
     "/vendors/general.js": "/vendors/general.js",
     "/vendors/plugin.js": "/vendors/plugin.js",
     "/vendors/plugin.css": "/vendors/plugin.css"

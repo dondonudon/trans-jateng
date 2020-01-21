@@ -21,7 +21,7 @@ class c_LaporanTopTransaksiPetugas extends Controller
                 ->leftJoin('ms_bus','transaksi.id_bus','=','ms_bus.id')
                 ->leftJoin('ms_koridor','transaksi.id_koridor','=','ms_koridor.id')
                 ->where('tgl_transaksi','=',$tgl)
-                ->orderBy('total')
+                ->orderBy('total','desc')
                 ->groupBy('transaksi.username','ms_koridor.rute','ms_koridor.koridor','ms_bus.nama','users.name')
                 ->get();
         } catch (\Exception $ex) {

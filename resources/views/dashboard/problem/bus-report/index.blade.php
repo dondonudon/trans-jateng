@@ -100,6 +100,14 @@
                             }
                         }
                     },
+                    {
+                        title:"TANGGAL",field:"created_at", formatter:"datetime",
+                        formatterParams:{
+                            inputFormat:"YYYY-MM-DD HH:mm:ss",
+                            outputFormat:"DD MMM YY - HH:mm:ss",
+                            invalidPlaceholder:"(invalid date)",
+                        }
+                    },
                     {title:"BUS",field:"bus"},
                     {title:"KORIDOR",field:"koridor"},
                     {title:"TRIP",field:"trip"},

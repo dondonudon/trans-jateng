@@ -23,7 +23,7 @@ class s_MsDevice extends Seeder
             ],
             [
                 'nama' => 'DEVICE II',
-                'imei' => '99001024535470',
+                'imei' => '868029030517106',
                 'kode' => 'D0002',
                 'status' => '1',
                 'created_at' => date('Y-m-d H:i:s'),

@@ -13,7 +13,7 @@ class c_ProblemBusReport extends Controller
     public function dataset($start,$end) {
         try {
             return DB::table('problems')
-                ->select( 'problems.id','problems.keterangan','ms_bus.nama as bus','ms_koridor.koridor','users.name','problems.longitude','problems.latitude','trip','shift','problems.status'
+                ->select( 'problems.id','problems.keterangan','ms_bus.nama as bus','ms_koridor.koridor','users.name','problems.longitude','problems.latitude','trip','shift','problems.status','problems.created_at'
                 )
                 ->leftJoin('users','problems.username','=','users.username')
                 ->leftJoin('ms_bus','problems.id_bus','=','ms_bus.id')
@@ -44,7 +44,7 @@ class c_ProblemBusReport extends Controller
         try {
             DB::beginTransaction();
             $dataset = DB::table('problems')
-                ->select( 'problems.id','problems.keterangan','ms_bus.nama as bus','ms_koridor.koridor','users.name','problems.longitude','problems.latitude','trip','shift'
+                ->select( 'problems.id','problems.keterangan','ms_bus.nama as bus','ms_koridor.koridor','users.name','problems.longitude','problems.latitude','trip','shift','problems.created_at'
                 )
                 ->leftJoin('users','problems.username','=','users.username')
                 ->leftJoin('ms_bus','problems.id_bus','=','ms_bus.id')

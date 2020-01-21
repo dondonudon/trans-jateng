@@ -10,7 +10,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-2">
                                 <div class="form-group">
                                     <label for="iTanggal">Filter Tanggal</label>
                                     <input type="text" class="form-control text-right" id="iTanggal" name="tanggal">
@@ -49,9 +49,7 @@
         const btnExcel = $('#btnExcel');
         const iTanggal = $('#iTanggal');
         iTanggal.daterangepicker({
-            // singleDatePicker: true,
-            startDate: moment().startOf('week'),
-            endDate: moment().endOf('week'),
+            singleDatePicker: true,
             locale: {
                 format: 'DD MMM YYYY'
             }
@@ -68,8 +66,7 @@
                 selectable: 0,
                 ajaxURL: "{{ url('dashboard/laporan/transaksi-bus-shelter/data') }}",
                 ajaxParams: {
-                    start: iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD'),
-                    end: iTanggal.data('daterangepicker').endDate.format('YYYY-MM-DD')
+                    tgl: iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD'),
                 },
                 ajaxConfig: {
                     method: "POST",
@@ -95,30 +92,30 @@
                     {
                         title:"JAM TRANSAKSI",
                         columns:[
-                            {title:"00", field:"j_00", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"01", field:"j_01", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"02", field:"j_02", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"03", field:"j_03", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"04", field:"j_04", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"05", field:"j_05", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"06", field:"j_06", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"07", field:"j_07", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"08", field:"j_08", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"09", field:"j_09", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"10", field:"j_10", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"11", field:"j_11", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"12", field:"j_12", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"13", field:"j_13", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"14", field:"j_14", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"15", field:"j_15", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"16", field:"j_16", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"17", field:"j_17", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"18", field:"j_18", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"19", field:"j_19", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"20", field:"j_20", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"21", field:"j_21", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"22", field:"j_22", align:"right", width:20, bottomCalc:"sum"},
-                            {title:"23", field:"j_23", align:"right", width:20, bottomCalc:"sum"},
+                            {title:"00", field:"j_00", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"01", field:"j_01", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"02", field:"j_02", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"03", field:"j_03", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"04", field:"j_04", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"05", field:"j_05", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"06", field:"j_06", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"07", field:"j_07", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"08", field:"j_08", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"09", field:"j_09", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"10", field:"j_10", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"11", field:"j_11", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"12", field:"j_12", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"13", field:"j_13", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"14", field:"j_14", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"15", field:"j_15", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"16", field:"j_16", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"17", field:"j_17", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"18", field:"j_18", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"19", field:"j_19", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"20", field:"j_20", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"21", field:"j_21", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"22", field:"j_22", align:"right", width:60, bottomCalc:"sum"},
+                            {title:"23", field:"j_23", align:"right", width:60, bottomCalc:"sum"},
                         ],
                     },
                     {title:"TOTAL TRANSAKSI",field:"total_transaksi",align:"right", bottomCalc:"sum"},
@@ -142,17 +139,15 @@
                 listTable.setData(
                     "{{ url('dashboard/laporan/transaksi-bus-shelter/data') }}",
                     {
-                        start: picker.startDate.format('YYYY-MM-DD'),
-                        end: picker.endDate.format('YYYY-MM-DD')
+                        tgl: picker.startDate.format('YYYY-MM-DD'),
                     }
                 );
             });
 
             btnPDF.click(function (e) {
                 e.preventDefault();
-                let start = iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD');
-                let end = iTanggal.data('daterangepicker').endDate.format('YYYY-MM-DD');
-                window.open('{{ url('dashboard/laporan/transaksi-bus-shelter/export/pdf') }}/'+start+'/'+end);
+                let tgl = iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD');
+                window.open('{{ url('dashboard/laporan/transaksi-bus-shelter/export/pdf') }}/'+tgl);
             });
         });
     </script>

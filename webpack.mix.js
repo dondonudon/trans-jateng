@@ -40,4 +40,5 @@ mix
         'node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css',
         'node_modules/sweetalert2/dist/sweetalert2.css',
         'node_modules/select2/dist/css/select2.css',
-    ], 'public/vendors/plugin.css');
+    ], 'public/vendors/plugin.css')
+    .sass('resources/sass/style.scss', 'public/style.css');

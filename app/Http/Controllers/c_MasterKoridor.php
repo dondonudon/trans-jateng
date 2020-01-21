@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\DB;
 
 class c_MasterKoridor extends Controller
 {
+    public function dataset() {
+        return DB::table('ms_koridor');
+    }
+
     public function index() {
         return view('dashboard.master-data.koridor.baru');
     }
@@ -16,9 +20,19 @@ class c_MasterKoridor extends Controller
         return view('dashboard.master-data.koridor.list');
     }
 
-    public function data() {
-//        $data['data'] = msKoridor::all();
-        return DB::table('ms_koridor')->paginate(8);
+    public function data(Request $request) {
+        $filters = $request->filters;
+        $data = [
+            'where' => []
+        ];
+        if ($filters !== null) {
+            foreach ($filters as $f) {
+                $data['where'][] = [
+                    $f['field'],$f['type'],'%'.$f['value'].'%'
+                ];
+            }
+        }
+        return $this->dataset()->where($data['where'])->paginate(8);
     }
 
     public function edit($id) {

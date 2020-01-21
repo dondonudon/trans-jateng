@@ -77,7 +77,7 @@
         $(document).ready(function () {
             iKoridor.select2({
                 ajax: {
-                    url: '{{ url('api/koridor') }}',
+                    url: '{{ url('koridor') }}',
                     dataType: 'json',
                     data: function (params) {
                         return {

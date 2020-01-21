@@ -60,7 +60,7 @@
             let listTable = new Tabulator("#listTable", {
                 resizableColumns: false,
                 placeholder: 'No Data Available',
-                layout: "fitDataStretch",
+                layout: "fitData",
                 selectable: 0,
                 ajaxURL: "{{ url('dashboard/laporan/top-transaksi-petugas/data') }}",
                 ajaxParams: {
@@ -74,7 +74,7 @@
                 },
                 dataLoaded: function(data) {
                     if (data.length > 0) {
-                        console.log(data);
+                        // console.log(data);
                         btnExport.removeAttr('disabled');
                     } else {
                         btnExport.attr('disabled',true);

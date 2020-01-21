@@ -21,9 +21,12 @@ class c_MasterHariLibur extends Controller
         $start = $request->start;
         $end = $request->end;
         $data = DB::table('ms_libur')
-            ->select('ms_libur.id','ms_libur.tanggal','ms_penumpang.jenis as penumpang','ms_libur.keterangan')
-            ->join('ms_penumpang','ms_libur.id_penumpang','=','ms_penumpang.id')
+            ->select('ms_libur.tanggal','ms_libur.keterangan',
+                DB::raw('GROUP_CONCAT(ms_penumpang.jenis) as penumpang')
+            )
+            ->leftJoin('ms_penumpang','ms_libur.id_penumpang','=','ms_penumpang.id')
             ->whereBetween('ms_libur.tanggal',[$start,$end])
+            ->groupBy('ms_libur.tanggal','ms_libur.keterangan')
             ->orderBy('ms_libur.tanggal','asc')
             ->paginate(8);
         return json_encode($data);

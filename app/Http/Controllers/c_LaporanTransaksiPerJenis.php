@@ -45,7 +45,7 @@ class c_LaporanTransaksiPerJenis extends Controller
                 ->leftJoin('ms_penumpang','transaksi.id_penumpang','=','ms_penumpang.id')
                 ->where([
                     ['transaksi.tgl_transaksi','=',$tgl],
-                    ['opsi_bayar','=','tiket manual']
+//                    ['opsi_bayar','=','tiket manual']
                 ])
                 ->groupBy('ms_penumpang.jenis')
                 ->get();
@@ -67,7 +67,7 @@ class c_LaporanTransaksiPerJenis extends Controller
                 ->leftJoin('ms_penumpang','transaksi.id_penumpang','=','ms_penumpang.id')
                 ->where([
                     ['transaksi.tgl_transaksi','=',$tgl],
-                    ['opsi_bayar','=','tiket offline']
+                    ['opsi_bayar','=',0]
                 ])
                 ->groupBy('transaksi.username')
                 ->get();

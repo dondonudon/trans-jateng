@@ -33,7 +33,7 @@
                                 <select style="width: 100%" id="iKoridor" name="koridor" required></select>
                             </div>
                             <div class="form-group">
-                                <label for="iNama">Nama Bus</label>
+                                <label for="iNama">Kode Bus</label>
                                 <input type="text" class="form-control" id="iNama" name="nama">
                             </div>
                             <div class="form-group">
@@ -67,7 +67,7 @@
         $(document).ready(function () {
             iKoridor.select2({
                 ajax: {
-                    url: '{{ url('api/koridor') }}',
+                    url: '{{ url('koridor') }}',
                     dataType: 'json',
                     data: function (params) {
                         return {

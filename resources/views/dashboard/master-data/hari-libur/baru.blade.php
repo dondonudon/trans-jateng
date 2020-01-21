@@ -1,22 +1,5 @@
 @extends('dashboard.layout')
 
-@section('page_menu')
-    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
-            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah {{ ucfirst(request()->segment(3)) }}</div>
-        </a>
-    </li>
-    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
-            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <span class="d-none d-lg-inline-block d-xl-inline-block">
-                 Daftar {{ ucfirst(request()->segment(3)) }}
-            </span>
-        </a>
-    </li>
-@endsection
-
 @section('content')
     <div class="section-body">
         <div class="row">

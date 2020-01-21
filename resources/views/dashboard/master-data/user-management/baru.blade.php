@@ -1,24 +1,5 @@
 @extends('dashboard.layout')
 
-@section('title','Master User')
-
-@section('page_menu')
-    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
-            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah User</div>
-        </a>
-    </li>
-    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
-            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <span class="d-none d-lg-inline-block d-xl-inline-block">
-                 Daftar User
-            </span>
-        </a>
-    </li>
-@endsection
-
 @php
 $menu = \App\Http\Controllers\c_Dashboard::sidebar();
 @endphp
@@ -59,6 +40,7 @@ $menu = \App\Http\Controllers\c_Dashboard::sidebar();
                             <hr>
                             <h5>Permission</h5>
                             @foreach($menu as $g)
+                                <hr>
                                 @if($g['group']['status'] !== 1)
                                     <div class="row">
                                         <div class="col-lg-3">

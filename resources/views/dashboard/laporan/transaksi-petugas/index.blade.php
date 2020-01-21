@@ -23,14 +23,33 @@
                     </div>
                     <div class="card-footer">
                         <div class="row justify-content-end">
-                            <div class="col-sm-12 col-lg-2 mt-2 mb-lg-0">
+                            <div class="col-sm-12 col-lg-3 mt-2 mb-lg-0">
                                 <div class="dropdown d-inline">
-                                    <button class="btn btn-block btn-danger dropdown-toggle" type="button" id="btnExport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
-                                        <i class="fas fa-file-export mr-2"></i> EXPORT
+                                    <button class="btn btn-block btn-danger dropdown-toggle" type="button" id="btnExportDetail" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                                        <i class="fas fa-file-export mr-2"></i> EXPORT DETAIL PETUGAS
                                     </button>
                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; transform: translate3d(0px, 28px, 0px);">
-                                        <a class="dropdown-item has-icon" href="#" id="btnPDF"><i class="far fa-file-pdf"></i> PDF</a>
-{{--                                        <a class="dropdown-item has-icon" href="#" id="btnExcel"><i class="far fa-file-excel"></i> EXCEL</a>--}}
+                                        <a class="dropdown-item has-icon" href="#" id="btnPDFDetail">
+                                            <i class="far fa-file-pdf"></i> PDF
+                                        </a>
+{{--                                        <a class="dropdown-item has-icon" href="#" id="btnExcelDetail">--}}
+{{--                                            <i class="far fa-file-excel"></i> EXCEL--}}
+{{--                                        </a>--}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3 mt-2 mb-lg-0">
+                                <div class="dropdown d-inline">
+                                    <button class="btn btn-block btn-danger dropdown-toggle" type="button" id="btnExport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                                        <i class="fas fa-file-export mr-2"></i> EXPORT TABEL
+                                    </button>
+                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; transform: translate3d(0px, 28px, 0px);">
+                                        <a class="dropdown-item has-icon" href="#" id="btnPDF">
+                                            <i class="far fa-file-pdf"></i> PDF
+                                        </a>
+{{--                                        <a class="dropdown-item has-icon" href="#" id="btnExcel">--}}
+{{--                                            <i class="far fa-file-excel"></i> EXCEL--}}
+{{--                                        </a>--}}
                                     </div>
                                 </div>
                             </div>
@@ -45,8 +64,10 @@
 @section('script')
     <script type="text/javascript">
         const btnExport = $('#btnExport');
+        const btnExportDetail = $('#btnExportDetail');
         const btnPDF = $('#btnPDF');
         const btnExcel = $('#btnExcel');
+        const btnPDFDetail = $('#btnPDFDetail');
         const iTanggal = $('#iTanggal');
 
         $(document).ready(function () {
@@ -60,8 +81,8 @@
             let listTable = new Tabulator("#listTable", {
                 resizableColumns: false,
                 placeholder: 'No Data Available',
-                layout: "fitDataStretch",
-                selectable: 0,
+                layout: "fitData",
+                selectable: 1,
                 ajaxURL: "{{ url('dashboard/laporan/transaksi-petugas/data') }}",
                 ajaxParams: {
                     tanggal: iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD')
@@ -81,16 +102,23 @@
                     }
                 },
                 columns: [
-                    {formatter:"rownum",width:"5%",align:"center"},
-                    {title:"Petugas",field:"petugas",width:"40%"},
-                    {title:"Bus",field:"bus",width:"30%"},
-                    {title:"Pendapatan",field:"pendapatan",width:"25%",
+                    {formatter:"rownum",align:"center"},
+                    {title:"Petugas",field:"petugas"},
+                    {title:"Bus",field:"bus"},
+                    {title:"Pendapatan",field:"pendapatan",
                         formatter: function (row) {
                             let numb = numeral(row.getData().pendapatan).format('0,0');
                             return '<div class="text-right">'+numb+'</div>';
                         },
                     },
-                ]
+                ],
+                rowSelectionChanged:function (data,rows) {
+                    if (data.length === 1) {
+                        btnExportDetail.removeAttr('disabled');
+                    } else {
+                        btnExportDetail.attr('disabled',true);
+                    }
+                }
             });
 
             iTanggal.on('apply.daterangepicker', function(ev, picker) {
@@ -101,6 +129,13 @@
                 e.preventDefault();
                 let tanggal = iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD');
                 window.open('{{ url('dashboard/laporan/transaksi-petugas/export/pdf') }}/'+tanggal);
+            });
+
+            btnPDFDetail.click(function (e) {
+                e.preventDefault();
+                let tanggal = iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD');
+                let username = listTable.getSelectedData()[0].username;
+                window.open('{{ url('dashboard/laporan/transaksi-petugas/export-detail/pdf') }}/'+tanggal+'/'+username);
             });
         });
     </script>

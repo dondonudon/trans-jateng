@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class c_SysMenu extends Controller
 {
+    public function dataset() {
+        return DB::table('sys_menus')
+            ->select('sys_menus.id','sys_menu_groups.name as group','sys_menus.name','sys_menus.segment_name','sys_menus.url','sys_menus.ord')
+            ->join('sys_menu_groups','sys_menus.id_group','=','sys_menu_groups.id')
+            ->get();
+    }
+
     public function index() {
         $group = DB::table('sys_menu_groups')->select('id','name')->get();
         return view('dashboard.system-utility.menu.baru')->with('data',$group);
@@ -18,11 +25,7 @@ class c_SysMenu extends Controller
     }
 
     public function listData() {
-        $data['data'] = DB::table('sys_menus')
-            ->select('sys_menus.id','sys_menu_groups.name as id_group','sys_menus.name','sys_menus.segment_name','sys_menus.url','sys_menus.ord')
-            ->join('sys_menu_groups','sys_menus.id_group','=','sys_menu_groups.id')
-            ->get();
-        return json_encode($data);
+        return json_encode($this->dataset());
     }
 
     public function edit($id) {
@@ -65,6 +68,24 @@ class c_SysMenu extends Controller
         } catch (\Exception $ex) {
             DB::rollBack();
             return response()->json($ex);
+        }
+    }
+
+    public function reorder(Request $request) {
+        $id = $request->id;
+        $ord = $request->ord;
+        try {
+            DB::beginTransaction();
+            DB::table('sys_menus')
+                ->where('id','=',$id)
+                ->update([
+                    'ord' => $ord,
+                ]);
+            DB::commit();
+            return 'success';
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return response()->json([$ex]);
         }
     }
 }

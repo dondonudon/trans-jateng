@@ -1,22 +1,5 @@
 @extends('dashboard.layout')
 
-@section('page_menu')
-    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
-            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah {{ ucfirst(request()->segment(3)) }}</div>
-        </a>
-    </li>
-    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
-            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <span class="d-none d-lg-inline-block d-xl-inline-block">
-                 Daftar {{ ucfirst(request()->segment(3)) }}
-            </span>
-        </a>
-    </li>
-@endsection
-
 @section('content')
     <div class="section-body">
         <div class="row">
@@ -29,16 +12,32 @@
                         <input type="hidden" name="type" value="baru">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="col-sm-12 col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label for="iJenis">Jenis</label>
                                         <input type="text" class="form-control" id="iJenis" name="jenis">
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                <div class="col-sm-12 col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label for="iHarga">Harga</label>
                                         <input type="text" class="form-control" id="iHarga" name="harga">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <div class="control-label">Opsi Pembayaran</div>
+                                        <div class="custom-switches-stacked mt-2">
+                                            @foreach($data['pembayaran'] as $p)
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="pembayaran[]" value="{{ $p->id }}" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">{{ $p->nama }}</span>
+                                                </label>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +59,6 @@
 @section('script')
     <script type="text/javascript">
         let formData = $('#formData');
-        const iJenis = $('#iJenis');
         const iHarga = new Cleave('#iHarga', {
             numeral: true,
             numeralThousandsGroupStyle: 'thousand'
@@ -69,16 +67,10 @@
         $(document).ready(function () {
             formData.submit(function (e) {
                 e.preventDefault();
-                let jenis = iJenis.val();
-                let harga = iHarga.getRawValue();
                 $.ajax({
                     url: '{{ url('dashboard/master/penumpang/submit') }}',
                     method: 'post',
-                    data: {
-                        type: 'baru',
-                        jenis: jenis,
-                        harga: harga
-                    },
+                    data: $(this).serialize(),
                     success: function (response) {
                         if (response === 'success') {
                             Swal.fire({

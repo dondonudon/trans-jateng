@@ -2,114 +2,32 @@
 <html lang="id">
 <head>
     <title>LAPORAN Transaksi per Jenis</title>
-
-    <style>
-        /**
-            Set the margins of the page to 0, so the footer and the header
-            can be of the full height and width !
-         **/
-        @page {
-            margin-top: 100px;
-            margin-right: 50px;
-            margin-left: 50px;
-            margin-bottom: 100px;
-            font-family: 'Open Sans', sans-serif;;
-            font-size: 14px;
-        }
-
-        /** Define now the real margins of every page in the PDF **/
-        body {
-            margin-top: 2.5cm;
-            margin-bottom: 0.5cm;
-        }
-
-        /** Define the header rules **/
-        header {
-            position: fixed;
-            top: -60px;
-            left: 0px;
-            right: 0px;
-            height: 50px;
-
-            /** Extra personal styles **/
-            /*background-color: #03a9f4;*/
-            color: black;
-            text-align: left;
-            line-height: 20px;
-        }
-
-        /** Define the footer rules **/
-        footer {
-            position: fixed;
-            bottom: -60px;
-            left: 0px;
-            right: 0px;
-            height: 50px;
-
-            /** Extra personal styles **/
-            /*background-color: #03a9f4;*/
-            color: black;
-            text-align: center;
-            line-height: 35px;
-        }
-
-        .page-break {
-            page-break-after: always;
-        }
-
-        .table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        .table td, .table th {
-            border: 1px solid #dddddd;
-            /*text-align: left;*/
-            padding: 3px;
-        }
-
-        .table-sm td, .table-sm th {
-            /*border: 1px solid black;*/
-            margin: 1px;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .color-gray {
-            background-color: #e4e4e4;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ public_path('assets/pdf/landscape.css') }}">
 </head>
 <body>
 <header>
-    <table class="" style="width: 100%; border-bottom: 3px solid darkred">
+    <table style="width: 100%">
         <tr>
-            <td rowspan="3" style="width: 20%;">
-                <img src="{{ public_path('assets/logo/with-name/logo-1000.png') }}" class="img-fluid mt-3" style="width: 120px" alt="Logo">
+            <td rowspan="3" style="width: 20%">
+                <img src="assets/logo/with-name/logo-1000.png" class="logo" alt="Logo">
             </td>
-            <td style="padding-left: -120px; font-weight: bold; font-size: 30px; text-align: center; vertical-align: bottom">BUS RAPID TRANSIT</td>
+            <td class="header-brt" style="width: 60%">BUS RAPID TRANSIT</td>
+            <td rowspan="3"></td>
         </tr>
         <tr>
-            <td style="padding-left: -120px; color: darkred; font-weight: bold; font-size: 23px; text-align: center; vertical-align: center">TRANS JAWA TENGAH</td>
+            <td class="header-tj">TRANS JAWA TENGAH</td>
         </tr>
-        <tr style="">
-            <td style="padding-left: -120px; font-size: 20px; text-align: center; font-family: 'Times New Roman',serif; font-weight: bold; vertical-align: center">Laporan Transaksi Bus/Shelter</td>
+        <tr>
+            <td class="document-title">LAPORAN TRANSAKSI PER KORIDOR</td>
         </tr>
     </table>
+    <hr>
 </header>
 
-<footer style="font-size: 15px">
-    <table style="width: 100%; margin: 10px; font-size: 8px">
+<footer>
+    <table style="width: 100%">
         <tr>
-            <td>
-                Dicetak oleh {{ request()->session()->get('name') }} ({{ date('d F Y - H:i:s') }})
-            </td>
+            <td>Dicetak oleh {{ request()->session()->get('name') }} ({{ date('d F Y - H:i:s') }})</td>
         </tr>
     </table>
 </footer>
@@ -145,14 +63,20 @@ $totalTransaksi = 0;
 $totalRupiah = 0;
 @endphp
 <main>
-    <div style="font-weight: bold">Transaksi per Bus/Shelter Tanggal {{ date('d F Y',strtotime(request()->segment(6))) }} - {{ date('d F Y',strtotime(request()->segment(7))) }}</div>
-    <table class="table" style="width: 100%; padding-top: 0.5cm">
+    <table>
+        <tr>
+            <td class="text-bold">Tanggal Laporan</td>
+            <td>:</td>
+            <td>{{ date('d F Y',strtotime(request()->segment(6))) }}</td>
+        </tr>
+    </table>
+    <table class="table-transaksi">
         <thead style="background-color: darkred; color: white">
         <tr class="text-center">
             <th rowspan="2">BUS</th>
             <th colspan="24">JAM TRANSAKSI</th>
-            <th rowspan="2">TOTAL TRAN..</th>
-            <th rowspan="2">TOTAL RUPIAH</th>
+            <th rowspan="2">TOTAL</th>
+            <th rowspan="2">TOTAL<br>RUPIAH</th>
         </tr>
         <tr style="text-align: center">
             <th>00</th>
@@ -246,10 +170,8 @@ $totalRupiah = 0;
             <th style="text-align: right">{{ number_format($totalRupiah) }}</th>
         </tr>
         </tbody>
-
     </table>
 </main>
-
 
 </body>
 </html>

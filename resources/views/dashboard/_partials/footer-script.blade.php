@@ -41,9 +41,9 @@
         });
     });
 
-    const platform = new H.service.Platform({
-        'apikey': 'SVQjU5j3pvx_8Ea6iBG3mjwNwt2v5wNw3h-IWyfpLUg'
-    });
-
-    const defaultLayers = platform.createDefaultLayers();
+    // const platform = new H.service.Platform({
+    //     'apikey': 'SVQjU5j3pvx_8Ea6iBG3mjwNwt2v5wNw3h-IWyfpLUg'
+    // });
+    //
+    // const defaultLayers = platform.createDefaultLayers();
 </script>

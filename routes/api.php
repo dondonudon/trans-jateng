@@ -19,67 +19,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('koridor',function () {
-    $koridor = [];
-    if (isset($_GET['search'])) {
-        $koridor['results'] = DB::table('ms_koridor')
-            ->select('id','koridor as text','koridor as koridor','rute','trip_a','trip_b')
-            ->where('koridor','like','%'.$_GET['search'].'%')
-            ->where('status','=','1')
-            ->orderBy('koridor','asc')
-            ->get();
-    } else {
-        $koridor['results'] = DB::table('ms_koridor')
-            ->select('id','koridor as text','koridor as koridor','rute','trip_a','trip_b')
-            ->where('status','=','1')
-            ->orderBy('koridor','asc')
-            ->get();
-    }
-    return $koridor;
-});
+Route::get('sync/master','c_Android@syncMaster');
 
-Route::get('bus',function () {
-    $koridor = [];
-    if (isset($_GET['search'])) {
-        $koridor['results'] = DB::table('ms_bus')
-            ->select('id','nama as text','merk','no_pol','id_koridor')
-            ->where('nama','like','%'.$_GET['search'].'%')
-            ->where('status','=','1')
-            ->orderBy('nama','asc')
-            ->get();
-    } else {
-        $koridor['results'] = DB::table('ms_bus')
-            ->select('id','nama as text','merk','no_pol','id_koridor')
-            ->where('status','=','1')
-            ->orderBy('nama','asc')
-            ->get();
-    }
-    return $koridor;
-});
+Route::get('koridor','c_Android@webKoridor');
 
-Route::get('penumpang',function () {
-    $date = date('Y-m-d');
-    $Penumpang = [];
-    $libur = DB::table('ms_libur')->where('tanggal','=',$date)->pluck('id_penumpang');
-    $libur[] = 99;
-    if (isset($_GET['search'])) {
-        $Penumpang['results'] = DB::table('ms_penumpang')
-            ->select('id','jenis as text','harga')
-            ->where('jenis','like','%'.$_GET['search'].'%')
-            ->where('status','=','1')
-            ->whereNotIn('id',$libur)
-            ->orderBy('jenis','asc')
-            ->get();
-    } else {
-        $Penumpang['results'] = DB::table('ms_penumpang')
-            ->select('id','jenis as text','harga')
-            ->whereNotIn('id',$libur)
-            ->where('status','=','1')
-            ->orderBy('jenis','asc')
-            ->get();
-    }
-    return $Penumpang;
-});
+Route::get('shelter','c_Android@webShelter');
+
+Route::get('bus','c_Android@webBus');
+
+Route::get('penumpang','c_Android@webPenumpang');
 Route::get('penumpang/{id}',function ($id) {
     $dtPenumpang = DB::table('ms_penumpang')
         ->select('harga')
@@ -92,3 +40,5 @@ Route::get('penumpang/{id}',function ($id) {
 Route::post('login','c_Android@login');
 Route::post('sync','c_Android@sync');
 Route::post('problem','c_Android@problemReport');
+Route::post('rekap-transaksi','c_Android@rekapTransaksi');
+Route::post('laporan-lmb','c_Android@lmbReport');

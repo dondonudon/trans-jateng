@@ -1,16 +1,5 @@
 @extends('dashboard.layout')
 
-@section('page_menu')
-    <li class="nav-item">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">Tambah Menu</a>
-    </li>
-    <li class="nav-item active">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">List Menu</a>
-    </li>
-@endsection
-
-@section('title','System Utility - Menu')
-
 @section('content')
     <div class="section-body">
         <div class="row">
@@ -19,18 +8,8 @@
                     <div class="card-header">
                         <h4>Daftar Menu</h4>
                     </div>
-                    <div class="card-body">
-                        <table id="listTable" class="table table-sm table-striped table-bordered display nowrap" style="width: 100%">
-                            <thead>
-                            <tr>
-                                <th>Group</th>
-                                <th>Name</th>
-                                <th>Segment Name</th>
-                                <th>Url</th>
-                                <th>Order</th>
-                            </tr>
-                            </thead>
-                        </table>
+                    <div class="card-body p-0">
+                        <div class="thead-dark table-sm table-striped" id="listTable" style="width: 100%"></div>
                     </div>
                     <div class="card-footer bg-whitesmoke">
                         <div class="row justify-content-end">
@@ -54,47 +33,99 @@
 
 @section('script')
     <script type="text/javascript">
+        function updateOrder(table,cell) {
+            let data = cell.getData();
+            $.ajax({
+                url: '{{ url('dashboard/system/menu/reorder') }}',
+                method: 'post',
+                data: {id:data.id, ord:data.ord},
+                success: function(response) {
+                    if (response === 'success') {
+                        table.setData();
+                    } else {
+                        console.log(response);
+                    }
+                },
+                error: function(response) {
+                    console.log(response);
+                }
+            })
+        }
+
         let btnEdit = $('#btnEdit');
 
-        let dataID;
-
         $(document).ready(function () {
-            let listTable = $('#listTable').DataTable({
-                scrollX: true,
-                order: [
-                    [0,'asc'],
-                    [4,'asc'],
-                ],
-                ajax: {
-                    url: '{{ url('dashboard/system/menu/list/data') }}'
+            let listTable = new Tabulator("#listTable", {
+                resizableColumns: false,
+                layout: "fitDataStretch",
+                selectable: 1,
+                placeholder: 'No Data Available',
+                ajaxURL: "{{ url('dashboard/system/menu/list/data') }}",
+                ajaxConfig: {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
+                    }
                 },
-                columns: [
-                    {data: 'id_group'},
-                    {data: 'name'},
-                    {data: 'segment_name'},
-                    {data: 'url'},
-                    {data: 'ord'},
+                groupBy: "group",
+                initialSort:[
+                    {column:"ord", dir:"asc"},
                 ],
-            });
-            $('#listTable tbody').on('click','tr',function () {
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                    btnEdit.attr('disabled',true);
-
-                    dataID = null;
-                } else {
-                    listTable.$('tr.selected').removeClass('selected');
-                    $(this).addClass('selected');
-                    btnEdit.removeAttr('disabled');
-
-                    let data = listTable.row('.selected').data();
-                    dataID = data.id;
+                columns: [
+                    {title:"ORDER",field:"ord",editor:"input"},
+                    {title:"NAMA MENU",field:"name"},
+                    // {title:"NAMA GROUP",field:"group"},
+                    {title:"NAMA SEGMENT",field:"segment_name"},
+                    {title:"URL",field:"url"},
+                ],
+                rowSelectionChanged:function (data,rows) {
+                    if (data.length === 1) {
+                        btnEdit.removeAttr('disabled');
+                    } else {
+                        btnEdit.attr('disabled',true);
+                    }
+                },
+                cellEdited: function(cell) {
+                    updateOrder(listTable,cell);
                 }
             });
+            {{--let listTable = $('#listTable').DataTable({--}}
+            {{--    scrollX: true,--}}
+            {{--    order: [--}}
+            {{--        [0,'asc'],--}}
+            {{--        [4,'asc'],--}}
+            {{--    ],--}}
+            {{--    ajax: {--}}
+            {{--        url: '{{ url('dashboard/system/menu/list/data') }}'--}}
+            {{--    },--}}
+            {{--    columns: [--}}
+            {{--        {data: 'id_group'},--}}
+            {{--        {data: 'name'},--}}
+            {{--        {data: 'segment_name'},--}}
+            {{--        {data: 'url'},--}}
+            {{--        {data: 'ord'},--}}
+            {{--    ],--}}
+            {{--});--}}
+            {{--$('#listTable tbody').on('click','tr',function () {--}}
+            {{--    if ($(this).hasClass('selected')) {--}}
+            {{--        $(this).removeClass('selected');--}}
+            {{--        btnEdit.attr('disabled',true);--}}
+
+            {{--        dataID = null;--}}
+            {{--    } else {--}}
+            {{--        listTable.$('tr.selected').removeClass('selected');--}}
+            {{--        $(this).addClass('selected');--}}
+            {{--        btnEdit.removeAttr('disabled');--}}
+
+            {{--        let data = listTable.row('.selected').data();--}}
+            {{--        dataID = data.id;--}}
+            {{--    }--}}
+            {{--});--}}
 
             btnEdit.click(function (e) {
                 e.preventDefault();
-                window.location = '{{ url('dashboard/system/menu/edit') }}/'+dataID;
+                let id = listTable.getSelectedData()[0].id;
+                window.location = '{{ url('dashboard/system/menu/edit') }}/'+id;
             })
         });
     </script>

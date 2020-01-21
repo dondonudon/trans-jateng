@@ -8,6 +8,34 @@
                     <div class="card-header">
                         <h4>Daftar {{ ucfirst(request()->segment(3)) }}</h4>
                     </div>
+                    <div class="card-body pt-0 pb-0">
+                        <form id="formFilter">
+                            <div class="row justify-content-end">
+                                <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2">
+                                    <div class="form-group">
+                                        <select class="form-control" id="fKolom">
+                                            <option value="jenis">Jenis Penumpang</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="fas fa-search"></i>
+                                                </div>
+                                            </div>
+                                            <input type="text" class="form-control phone-number" id="fValue">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2">
+                                    <button type="button" class="btn btn-warning btn-block" id="btnClearFilter">CLEAR Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="card-body p-0">
                         <div class="thead-dark table-sm table-striped" id="listTable" style="width: 100%"></div>
                     </div>
@@ -84,6 +112,8 @@
             });
         }
 
+        const formFilter = $('#formFilter');
+        const btnClearFilter = $('#btnClearFilter');
         const btnDisable = $('#btnDisable');
         const btnActivate = $('#btnActivate');
         let btnEdit = $('#btnEdit');
@@ -97,6 +127,7 @@
                 selectable: 1,
                 placeholder: 'No Data Available',
                 pagination: "remote",
+                ajaxFiltering: true,
                 ajaxURL: "{{ url('dashboard/master/penumpang/data') }}",
                 ajaxConfig: {
                     method: "POST",
@@ -107,6 +138,9 @@
                 ajaxURLGenerator:function(url, config, params){
                     return url + "?page=" + params.page;
                 },
+                // initialSort:[
+                //     {column:}
+                // ],
                 columns: [
                     {
                         title:"Status",field:"status",width:100,
@@ -131,6 +165,7 @@
                             return numeral(cell.getValue()).format('0,0.0');
                         }
                     },
+                    {title:"Opsi Bayar",field:"pembayaran"},
                 ],
                 rowSelectionChanged:function (data,rows) {
                     if (data.length === 1) {
@@ -196,6 +231,18 @@
             {{--        dataID = data.id;--}}
             {{--    }--}}
             {{--});--}}
+
+            formFilter.submit(function (e) {
+                e.preventDefault();
+                let kolom = $('#fKolom');
+                let value = $('#fValue');
+                listTable.setFilter(kolom.val(),'like',value.val());
+            });
+
+            btnClearFilter.click(function (e) {
+                e.preventDefault();
+                listTable.clearFilter();
+            });
 
             btnEdit.click(function (e) {
                 e.preventDefault();

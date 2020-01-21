@@ -16,10 +16,22 @@ class c_MasterBus extends Controller
         return view('dashboard.master-data.bus.list');
     }
 
-    public function data() {
+    public function data(Request $request) {
+        $filters = $request->filters;
+        $data = [
+            'where' => []
+        ];
+        if ($filters !== null) {
+            foreach ($filters as $f) {
+                $data['where'][] = [
+                    $f['field'],$f['type'],'%'.$f['value'].'%'
+                ];
+            }
+        }
         return DB::table('ms_bus')
             ->select('ms_bus.status','ms_bus.id','ms_koridor.koridor','nama','merk','no_pol','ms_bus.longitude','ms_bus.latitude')
             ->join('ms_koridor','ms_bus.id_koridor','=','ms_koridor.id')
+            ->where($data['where'])
             ->paginate(8);
     }
 

@@ -19,7 +19,7 @@
                         </div>
                     </div>
                     <div class="card-body p-0">
-                        <div class="thead-dark table-sm table-striped" id="listTable" style="width: 100%"></div>
+                        <div class="thead-dark table-sm table-striped table-bordered" id="listTable" style="width: 100%"></div>
                     </div>
                     <div class="card-footer bg-whitesmoke">
                         <div class="row justify-content-end">
@@ -62,6 +62,7 @@
                 selectable: 1,
                 placeholder: 'No Data Available',
                 pagination: "remote",
+                ajaxFiltering: true,
                 ajaxURL: "{{ url('dashboard/master/hari-libur/data') }}",
                 ajaxConfig: {
                     method: "POST",
@@ -75,7 +76,14 @@
                     return url + "?page=" + params.page+'&start='+start+'&end='+end;
                 },
                 columns: [
-                    {title:"Tanggal",field:"tanggal"},
+                    {
+                        title:"Tanggal",field:"tanggal",formatter:"datetime",
+                        formatterParams:{
+                            inputFormat:"YYYY-MM-DD",
+                            outputFormat:"DD-MM-YYYY",
+                            invalidPlaceholder:"(invalid date)",
+                        }
+                    },
                     {title:"Penumpang",field:"penumpang"},
                     {title:"Keterangan",field:"keterangan"},
                 ],

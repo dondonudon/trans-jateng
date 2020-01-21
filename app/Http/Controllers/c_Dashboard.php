@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\msPenumpang;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -154,5 +156,99 @@ class c_Dashboard extends Controller
                 ->get();
             return $samsat;
         }
+    }
+
+    public function petugas(Request $request) {
+        $petugas = [];
+        $search = $_GET['search'] ?? null;
+        if ($search !== null) {
+            $petugas['results'] = DB::table('users')
+                ->select('username as id','name as text')
+                ->where([
+                    ['name','like','%'.$search.'%'],
+                    ['status','=',1],
+                ])
+                ->whereIn('system',[0,1])
+                ->orderBy('name','asc')
+                ->get();
+        } else {
+            $petugas['results'] = DB::table('users')
+                ->select('username as id','name as text')
+                ->where('status','=','1')
+                ->whereIn('system',[0,1])
+                ->orderBy('name','asc')
+                ->limit(10)
+                ->get();
+        }
+        return $petugas;
+    }
+
+    public function koridor(Request $request) {
+        $koridor = [];
+        if (isset($_GET['search'])) {
+            $koridor['results'] = DB::table('ms_koridor')
+                ->select('id','koridor as text','koridor as koridor','rute','trip_a','trip_b')
+                ->where('koridor','like','%'.$_GET['search'].'%')
+                ->where('status','=','1')
+                ->orderBy('koridor','asc')
+                ->get();
+        } else {
+            $koridor['results'] = DB::table('ms_koridor')
+                ->select('id','koridor as text','koridor as koridor','rute','trip_a','trip_b')
+                ->where('status','=','1')
+                ->orderBy('koridor','asc')
+                ->limit(10)
+                ->get();
+        }
+        return $koridor;
+    }
+
+    public function bus(Request $request) {
+        $bus = [];
+        if (isset($_GET['search'])) {
+            $bus['results'] = DB::table('ms_bus')
+                ->select('id','nama as text')
+                ->where([
+                    ['nama','like','%'.$_GET['search'].'%'],
+                    ['status','=','1'],
+                ])
+                ->orderBy('nama','asc')
+                ->get();
+        } else {
+            $bus['results'] = DB::table('ms_bus')
+                ->select('id','nama as text')
+                ->where([
+                    ['status','=','1'],
+                ])
+                ->orderBy('nama','asc')
+                ->limit(10)
+                ->get();
+        }
+        return $bus;
+    }
+
+    public function penumpang(Request $request) {
+        $penumpang = [];
+        $search = $_GET['search'] ?? null;
+        if ($search !== null) {
+            $penumpang['results'] = DB::table('ms_penumpang')
+                ->select('id','jenis as text','harga')
+                ->where('jenis','like','%'.$search.'%')
+                ->where('status','=','1')
+                ->orderBy('jenis','asc')
+                ->get();
+        } else {
+            $penumpang['results'] = DB::table('ms_penumpang')
+                ->select('id','jenis as text','harga')
+                ->where('status','=','1')
+                ->orderBy('jenis','asc')
+                ->limit(10)
+                ->get();
+        }
+        return $penumpang;
+    }
+
+    public function penumpangID($id) {
+        return msPenumpang::find($id);
     }
 }

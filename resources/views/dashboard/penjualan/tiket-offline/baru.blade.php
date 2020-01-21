@@ -1,14 +1,5 @@
 @extends('dashboard.layout')
 
-@section('page_menu')
-    <li class="nav-item active">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">{{ ucfirst(str_replace('-',' ',request()->segment(3))) }} Baru</a>
-    </li>
-    <li class="nav-item">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">List {{ ucfirst(str_replace('-',' ',request()->segment(3))) }}</a>
-    </li>
-@endsection
-
 @section('content')
     <div class="section-body">
         <div class="row">
@@ -20,13 +11,36 @@
                     <form id="formData">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-sm-12 col-md-5 col-lg-5">
+                                <div class="col-sm-12 col-md-5 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="iPetugas">Petugas</label>
+                                        <select style="width: 100%" id="iPetugas" name="petugas" required></select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-2 col-lg-1">
+                                    <div class="form-group">
+                                        <label for="iShift">Shift</label>
+                                        <select style="width: 100%" id="iShift" name="shift" required>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-5 col-lg-4">
                                     <div class="form-group">
                                         <label for="iKoridor">Koridor</label>
                                         <select style="width: 100%" id="iKoridor" name="koridor" required></select>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-5 col-lg-5">
+                                <div class="col-sm-12 col-md-5 col-lg-3">
+                                    <div class="form-group">
+                                        <label for="iBus">Bus</label>
+                                        <select style="width: 100%" id="iBus" name="bus" required></select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-5 col-lg-3">
                                     <div class="form-group">
                                         <label for="iPenumpang">Penumpang</label>
                                         <select style="width: 100%" id="iPenumpang" name="penumpang" required></select>
@@ -113,13 +127,44 @@
         const iEndTiket = document.getElementById('iEndTiket');
         const iTotal = document.getElementById('iTotal');
         const iTotalBiaya = document.getElementById('iTotalBiaya');
-        let iKoridor = $('#iKoridor');
-        let iPenumpang = $('#iPenumpang');
+        const iKoridor = $('#iKoridor');
+        const iPenumpang = $('#iPenumpang');
+        const iPetugas = $('#iPetugas');
+        const iShift = $('#iShift');
+        const iBus = $('#iBus');
 
         $(document).ready(function () {
+            iPetugas.select2({
+                ajax: {
+                    url: '{{ url('petugas') }}',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            search: params.term,
+                        }
+                    }
+                }
+            });
+            iShift.select2({
+                data: [
+                    {id:1, text:'1'},
+                    {id:2, text:'2'},
+                ]
+            });
             iKoridor.select2({
                 ajax: {
-                    url: '{{ url('api/koridor') }}',
+                    url: '{{ url('koridor') }}',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            search: params.term,
+                        }
+                    }
+                }
+            });
+            iBus.select2({
+                ajax: {
+                    url: '{{ url('bus') }}',
                     dataType: 'json',
                     data: function (params) {
                         return {
@@ -130,7 +175,7 @@
             });
             iPenumpang.select2({
                 ajax: {
-                    url: '{{ url('api/penumpang') }}',
+                    url: '{{ url('penumpang') }}',
                     dataType: 'json',
                     data: function (params) {
                         return {
@@ -142,11 +187,14 @@
             iPenumpang.change(function () {
                 let id = this.value;
                 $.ajax({
-                    url: '{{ url('api/penumpang') }}/'+id,
+                    url: '{{ url('penumpang') }}/'+id,
                     method: 'get',
                     success: function (response) {
-                        iHargaTiket.val(numeral(response).format('0,0.0'));
+                        iHargaTiket.val(numeral(response.harga).format('0,0.0'));
                         calculateTotal();
+                    },
+                    error: function (response) {
+                        console.log(response);
                     }
                 })
             });

@@ -60,6 +60,7 @@
                             <hr>
                             <h5>Permission</h5>
                             @foreach($menu as $g)
+                                <hr>
                                 @if($g['group']['status'] !== 1)
                                     <div class="row">
                                         <div class="col-lg-3">

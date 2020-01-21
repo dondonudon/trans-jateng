@@ -1,24 +1,5 @@
 @extends('dashboard.layout')
 
-@section('page_menu')
-    <li class="nav-item {{ (request()->segment(4) == null) ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}" class="nav-link">
-            <i class="fas fa-plus-circle mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <div class="d-none d-lg-inline-block d-xl-inline-block">Tambah User</div>
-        </a>
-    </li>
-    <li class="nav-item {{ (request()->segment(4) == 'list') ? 'active' : '' }}">
-        <a href="{{ url(request()->segment(1).'/'.request()->segment(2).'/'.request()->segment(3)) }}/list" class="nav-link">
-            <i class="fas fa-table mr-2" style="font-size: x-large; vertical-align: middle;"></i>
-            <span class="d-none d-lg-inline-block d-xl-inline-block">
-                 Daftar User
-            </span>
-        </a>
-    </li>
-@endsection
-
-@section('title','Master User')
-
 @section('content')
     <div class="section-body">
         <div class="row">
@@ -26,6 +7,35 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>List User</h4>
+                    </div>
+                    <div class="card-body pt-0 pb-0">
+                        <form id="formFilter">
+                            <div class="row justify-content-end">
+                                <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2">
+                                    <div class="form-group">
+                                        <select class="form-control" id="fKolom">
+                                            <option value="username">Username</option>
+                                            <option value="name">Nama</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="fas fa-search"></i>
+                                                </div>
+                                            </div>
+                                            <input type="text" class="form-control phone-number" id="fValue">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2">
+                                    <button type="button" class="btn btn-warning btn-block" id="btnClearFilter">CLEAR Filter</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="card-body p-0">
                         <div class="thead-dark table-sm table-striped" id="listTable"></div>
@@ -62,6 +72,8 @@
 
 @section('script')
     <script type="text/javascript">
+        const formFilter = $('#formFilter');
+        const btnClearFilter = $('#btnClearFilter');
         const btnEdit = $('#btnEdit');
         const btnReset = $('#btnReset');
         const btnDisable = $('#btnDisable');
@@ -75,6 +87,7 @@
                 selectable: 1,
                 placeholder: 'No Data Available',
                 pagination: "remote",
+                ajaxFiltering: true,
                 ajaxURL: "{{ url('dashboard/master/user-management/data') }}",
                 ajaxConfig: {
                     method: "POST",
@@ -99,6 +112,19 @@
                         }
                     },
                     {title:"Username",field:"username"},
+                    {
+                        title:"System",field:"system",
+                        formatter: function (row) {
+                            let data = row.getData().system;
+                            if (data === 0) {
+                                return 'Web & Android';
+                            } else if (data === 1) {
+                                return 'Android';
+                            } else {
+                                return 'Web';
+                            }
+                        }
+                    },
                     {title:"Nama",field:"name"},
                     {title:"No HP",field:"no_hp"},
                     {title:"Email",field:"email"},
@@ -121,6 +147,18 @@
                         btnActivate.addClass('disabled');
                     }
                 }
+            });
+
+            formFilter.submit(function (e) {
+                e.preventDefault();
+                let kolom = $('#fKolom');
+                let value = $('#fValue');
+                listTable.setFilter(kolom.val(),'like',value.val());
+            });
+
+            btnClearFilter.click(function (e) {
+                e.preventDefault();
+                listTable.clearFilter();
             });
 
             btnEdit.click(function (e) {

@@ -15,8 +15,10 @@ class c_PenjualanTiketOffline extends Controller
     }
 
     public function submit(Request $request) {
-        $user = Session::get('username');
+        $user = $request->petugas;
         $koridor = $request->koridor;
+        $bus = $request->bus;
+        $shift = $request->shift;
         $penumpang = $request->penumpang;
         $start = $request->start_tiket;
         $end = $request->end_tiket;
@@ -29,13 +31,15 @@ class c_PenjualanTiketOffline extends Controller
                 $trn->tgl_transaksi = date('Y-m-d');
                 $trn->jam_transaksi = date('H:i:s');
                 $trn->id_penumpang = $penumpang;
-                $trn->id_bus = 0;
-                $trn->opsi_bayar = 'tiket offline';
-                $trn->harga = $dtPenumpang->harga;
-                $trn->username = $user;
-                $trn->shift = 0;
                 $trn->id_koridor = $koridor;
-                $trn->trip = '-';
+                $trn->id_bus = $bus;
+                $trn->id_shelter = 0;
+                $trn->trip_a = '';
+                $trn->trip_b = '';
+                $trn->shift = $shift;
+                $trn->username = $user;
+                $trn->opsi_bayar = 0;
+                $trn->harga = $dtPenumpang->harga;
                 $trn->save();
             }
             DB::commit();

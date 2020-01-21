@@ -10,7 +10,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-2">
                                 <div class="form-group">
                                     <label for="iTanggal">Filter Tanggal</label>
                                     <input type="text" class="form-control text-right" id="iTanggal" name="tanggal">
@@ -51,9 +51,7 @@
 
         $(document).ready(function () {
             iTanggal.daterangepicker({
-                // singleDatePicker: true,
-                startDate: moment().startOf('week'),
-                endDate: moment().endOf('week'),
+                singleDatePicker: true,
                 locale: {
                     format: 'DD MMM YYYY'
                 }
@@ -66,8 +64,7 @@
                 selectable: 0,
                 ajaxURL: "{{ url('dashboard/laporan/transaksi-per-koridor/data') }}",
                 ajaxParams: {
-                    start: iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD'),
-                    end: iTanggal.data('daterangepicker').endDate.format('YYYY-MM-DD')
+                    tgl: iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD'),
                 },
                 ajaxConfig: {
                     method: "POST",
@@ -76,8 +73,8 @@
                     }
                 },
                 dataLoaded: function(data) {
+                    // console.log(data);
                     if (data.length > 0) {
-                        console.log(data);
                         btnExport.removeAttr('disabled');
                     } else {
                         btnExport.attr('disabled',true);
@@ -99,14 +96,18 @@
             });
 
             iTanggal.on('apply.daterangepicker', function(ev, picker) {
-                listTable.setData("{{ url('dashboard/laporan/transaksi-per-koridor/data') }}", {tanggal: picker.startDate.format('YYYY-MM-DD')});
+                listTable.setData(
+                    "{{ url('dashboard/laporan/transaksi-per-koridor/data') }}",
+                    {
+                        tgl: picker.startDate.format('YYYY-MM-DD'),
+                    }
+                );
             });
 
             btnPDF.click(function (e) {
                 e.preventDefault();
-                let start = iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD');
-                let end = iTanggal.data('daterangepicker').endDate.format('YYYY-MM-DD');
-                window.open('{{ url('dashboard/laporan/transaksi-per-koridor/export/pdf') }}/'+start+'/'+end);
+                let tgl = iTanggal.data('daterangepicker').startDate.format('YYYY-MM-DD');
+                window.open('{{ url('dashboard/laporan/transaksi-per-koridor/export/pdf') }}/'+tgl);
             });
         });
     </script>

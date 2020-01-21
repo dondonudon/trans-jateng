@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.5.2 (c) Oliver Folkerd */
+/* Tabulator v4.5.3 (c) Oliver Folkerd */
 
 ;(function (global, factory) {
 	if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined') {
@@ -13155,6 +13155,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		this.columnsByIndex = []; //hold columns in their order in the table
 		this.columnsByField = {}; //hold columns with lookup by field name
 		this.config = {};
+		this.active = false;
 	};
 
 	//trigger file download
@@ -13162,6 +13163,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var self = this,
 		    downloadFunc = false;
 		this.processConfig();
+		this.active = active;
 
 		function buildLink(data, mime) {
 			if (interceptCallback) {
@@ -13452,7 +13454,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	Download.prototype.commsReceived = function (table, action, data) {
 		switch (action) {
 			case "intercept":
-				this.download(data.type, "", data.options, data.intercept);
+				this.download(data.type, "", data.options, data.active, data.intercept);
 				break;
 		}
 	};
@@ -14047,6 +14049,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						this.table.modules.comms.send(options.sheets[sheet], "download", "intercept", {
 							type: "xlsx",
 							options: { sheetOnly: true },
+							active: self.active,
 							intercept: function intercept(data) {
 								workbook.Sheets[sheet] = data;
 							}
@@ -20693,7 +20696,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					if (mutator && updatedData) {
 						value = column.getFieldValue(updatedData);
 
-						if (typeof value !== "undefined") {
+						if (type == "data" || typeof value !== "undefined") {
 							component = column.getComponent();
 							params = typeof mutator.params === "function" ? mutator.params(value, data, type, component) : mutator.params;
 							column.setFieldValue(data, mutator.mutator(value, data, type, params, component));
@@ -21566,7 +21569,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			if (from) {
 
-				if (self.config.columns === true) {
+				if (self.config.columns === true || self.config.columns == undefined) {
 					keys = Object.keys(from);
 					keys.push("width");
 				} else {
@@ -21713,7 +21716,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			} else {
 				defStore.field = column.getField();
 
-				if (self.config.columns === true) {
+				if (self.config.columns === true || self.config.columns == undefined) {
 					keys = Object.keys(colDef);
 					keys.push("width");
 				} else {
@@ -40935,7 +40938,7 @@ return DataTable;
 }));
 
 /*!
-* sweetalert2 v9.5.2
+* sweetalert2 v9.5.4
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -43176,16 +43179,11 @@ function setParameters(params) {
   init(params);
 }
 
-function swalOpenAnimationFinished(popup, container) {
-  popup.removeEventListener(animationEndEvent, swalOpenAnimationFinished);
-  container.style.overflowY = 'auto';
-}
 /**
  * Open popup, add necessary classes and styles, fix scrollbar
  *
  * @param {Array} params
  */
-
 
 var openPopup = function openPopup(params) {
   var container = getContainer();
@@ -43214,10 +43212,22 @@ var openPopup = function openPopup(params) {
   }
 };
 
+function swalOpenAnimationFinished(event) {
+  var popup = getPopup();
+
+  if (event.target !== popup) {
+    return;
+  }
+
+  var container = getContainer();
+  popup.removeEventListener(animationEndEvent, swalOpenAnimationFinished);
+  container.style.overflowY = 'auto';
+}
+
 var setScrollingVisibility = function setScrollingVisibility(container, popup) {
   if (animationEndEvent && hasCssAnimation(popup)) {
     container.style.overflowY = 'hidden';
-    popup.addEventListener(animationEndEvent, swalOpenAnimationFinished.bind(null, popup, container));
+    popup.addEventListener(animationEndEvent, swalOpenAnimationFinished);
   } else {
     container.style.overflowY = 'auto';
   }
@@ -43924,7 +43934,7 @@ Object.keys(instanceMethods).forEach(function (key) {
   };
 });
 SweetAlert.DismissReason = DismissReason;
-SweetAlert.version = '9.5.2';
+SweetAlert.version = '9.5.4';
 
 var Swal = SweetAlert;
 Swal["default"] = Swal;

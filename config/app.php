@@ -16,6 +16,7 @@ return [
     'name' => env('APP_NAME', 'TRANS JATENG'),
     'shortname' => env('APP_SHORT', 'T.Jateng'),
     'developer' => env('APP_DEVELOPER','WAVE Solusi Indonesia'),
+    'google_map_api' => env('GOOGLE_MAP_API','AIzaSyDkUt5H_KKIPb7U95zwjiFYKZY5_lMaIsQ'),
 
     /*
     |--------------------------------------------------------------------------

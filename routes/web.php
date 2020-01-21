@@ -11,7 +11,22 @@
 |
 */
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+
+$routes = [
+    [
+        'method' => 'get',
+        'url' => 'login',
+        'act' => 'c_Login@index'
+    ],
+];
+
+foreach ($routes as $route) {
+    if ($route['method'] == 'get') {
+        Route::get($route['url'],$route['act'])->middleware();
+    }
+}
 
 //Route::get('print/{text}',function ($text) {
 //    $data['system'] = 'Trans Jateng';
@@ -36,7 +51,7 @@ Route::get('payment/gopay',function () {
 //    return response($image)->header('Content-type','image/svg+xml');
 //});
 
-Route::get('login','c_Login@index');
+//Route::get('login','c_Login@index');
 Route::post('login/submit','c_Login@submit');
 Route::post('logout','c_Login@logout');
 Route::get('reset-password','c_Login@resetPassword');
@@ -46,9 +61,18 @@ Route::get('storage/{filename}',function ($filename) {
 });
 
 Route::middleware(['check.login'])->group(function () {
+    Route::get('petugas','c_Dashboard@petugas');
+    Route::get('bus','c_Dashboard@bus');
+    Route::get('koridor','c_Dashboard@koridor');
+    Route::get('penumpang','c_Dashboard@penumpang');
+    Route::get('penumpang/{id}','c_Dashboard@penumpangID');
+
     Route::get('/', function () {
         return redirect('dashboard');
     });
+
+    Route::post('dashboard/statistics','c_Overview@statistics');
+    Route::post('dashboard/koridor-location','c_Overview@koridorLocation');
 
     Route::get('dashboard','c_Overview@index');
     Route::get('dashboard/profile','c_Profile@edit');
@@ -65,9 +89,10 @@ Route::middleware(['check.login'])->group(function () {
 
         Route::get('dashboard/system/menu','c_SysMenu@index');
         Route::get('dashboard/system/menu/list','c_SysMenu@list');
-        Route::get('dashboard/system/menu/list/data','c_SysMenu@listData');
+        Route::post('dashboard/system/menu/list/data','c_SysMenu@listData');
         Route::post('dashboard/system/menu/submit','c_SysMenu@submit');
         Route::get('dashboard/system/menu/edit/{id}','c_SysMenu@edit');
+        Route::post('dashboard/system/menu/reorder','c_SysMenu@reorder');
 
         Route::get('dashboard/master/user-management','c_MasterUserManagement@index');
         Route::get('dashboard/master/user-management/list','c_MasterUserManagement@list');
@@ -86,6 +111,14 @@ Route::middleware(['check.login'])->group(function () {
         Route::post('dashboard/master/koridor/disable','c_MasterKoridor@disable');
         Route::post('dashboard/master/koridor/activate','c_MasterKoridor@activate');
 
+        Route::get('dashboard/master/shelter','c_MasterShelter@index');
+        Route::get('dashboard/master/shelter/list','c_MasterShelter@list');
+        Route::post('dashboard/master/shelter/data','c_MasterShelter@data');
+        Route::get('dashboard/master/shelter/edit/{id}','c_MasterShelter@edit');
+        Route::post('dashboard/master/shelter/submit','c_MasterShelter@submit');
+        Route::post('dashboard/master/shelter/disable','c_MasterShelter@disable');
+        Route::post('dashboard/master/shelter/activate','c_MasterShelter@activate');
+
         Route::get('dashboard/master/bus','c_MasterBus@index');
         Route::get('dashboard/master/bus/list','c_MasterBus@list');
         Route::post('dashboard/master/bus/data','c_MasterBus@data');
@@ -93,6 +126,14 @@ Route::middleware(['check.login'])->group(function () {
         Route::post('dashboard/master/bus/submit','c_MasterBus@submit');
         Route::post('dashboard/master/bus/disable','c_MasterBus@disable');
         Route::post('dashboard/master/bus/activate','c_MasterBus@activate');
+
+        Route::get('dashboard/master/pembayaran','c_MasterPembayaran@index');
+        Route::get('dashboard/master/pembayaran/list','c_MasterPembayaran@list');
+        Route::post('dashboard/master/pembayaran/data','c_MasterPembayaran@data');
+        Route::get('dashboard/master/pembayaran/edit/{id}','c_MasterPembayaran@edit');
+        Route::post('dashboard/master/pembayaran/submit','c_MasterPembayaran@submit');
+        Route::post('dashboard/master/pembayaran/disable','c_MasterPembayaran@disable');
+        Route::post('dashboard/master/pembayaran/activate','c_MasterPembayaran@activate');
 
         Route::get('dashboard/master/penumpang','c_MasterPenumpang@index');
         Route::get('dashboard/master/penumpang/list','c_MasterPenumpang@list');
@@ -120,6 +161,7 @@ Route::middleware(['check.login'])->group(function () {
         Route::get('dashboard/laporan/transaksi-petugas','c_LaporanTransaksiPetugas@index');
         Route::post('dashboard/laporan/transaksi-petugas/data','c_LaporanTransaksiPetugas@data');
         Route::get('dashboard/laporan/transaksi-petugas/export/pdf/{tgl}','c_LaporanTransaksiPetugas@exportPDF');
+        Route::get('dashboard/laporan/transaksi-petugas/export-detail/pdf/{tgl}/{username}','c_LaporanTransaksiPetugas@exportDetailPetugasPDF');
 
         Route::get('dashboard/laporan/top-transaksi-petugas','c_LaporanTopTransaksiPetugas@index');
         Route::post('dashboard/laporan/top-transaksi-petugas/data','c_LaporanTopTransaksiPetugas@data');
@@ -132,11 +174,11 @@ Route::middleware(['check.login'])->group(function () {
 
         Route::get('dashboard/laporan/transaksi-per-koridor','c_LaporanTransaksiPerKoridor@index');
         Route::post('dashboard/laporan/transaksi-per-koridor/data','c_LaporanTransaksiPerKoridor@data');
-        Route::get('dashboard/laporan/transaksi-per-koridor/export/pdf/{start}/{end}','c_LaporanTransaksiPerKoridor@exportPDF');
+        Route::get('dashboard/laporan/transaksi-per-koridor/export/pdf/{tgl}','c_LaporanTransaksiPerKoridor@exportPDF');
 
         Route::get('dashboard/laporan/transaksi-bus-shelter','c_LaporanTransaksiBusShelter@index');
         Route::post('dashboard/laporan/transaksi-bus-shelter/data','c_LaporanTransaksiBusShelter@data');
-        Route::get('dashboard/laporan/transaksi-bus-shelter/export/pdf/{start}/{end}','c_LaporanTransaksiBusShelter@exportPDF');
+        Route::get('dashboard/laporan/transaksi-bus-shelter/export/pdf/{tgl}','c_LaporanTransaksiBusShelter@exportPDF');
 
         Route::get('dashboard/penjualan/tiket-offline','c_PenjualanTiketOffline@index');
         Route::post('dashboard/penjualan/tiket-offline/submit','c_PenjualanTiketOffline@submit');
