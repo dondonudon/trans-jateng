@@ -21,11 +21,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('sync/master','c_Android@syncMaster');
 
-Route::get('koridor','c_Android@webKoridor');
+Route::get('koridor','c_Android@datasetKoridor');
 
-Route::get('shelter','c_Android@webShelter');
+Route::get('shelter','c_Android@datasetShelter');
 
-Route::get('bus','c_Android@webBus');
+Route::get('bus','c_Android@datasetBus');
 
 Route::get('penumpang','c_Android@webPenumpang');
 Route::get('penumpang/{id}',function ($id) {
