@@ -6,7 +6,7 @@
 <div class="main-sidebar">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="{{ url('/') }}">{{ config('app.name') }}</a>
+            <a href="{{ url('/') }}">{{ config('app.name') }}{{ config('app.name1') }}</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
             <a href="{{ url('/') }}">

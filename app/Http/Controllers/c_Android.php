@@ -36,6 +36,7 @@ class c_Android extends Controller
                         'status' => 'success',
                         'data' => DB::table('users')
                             ->select('id','username','name','email','no_hp','created_at')
+                           
                             ->where('username','=',$username)->first(),
                         'device' => $device->first(),
                         'penumpang' => $this->penumpangTidakLibur(),
@@ -104,10 +105,10 @@ class c_Android extends Controller
             ->select(
                 'id',
                 'jenis',
-                DB::raw('REPLACE(FORMAT(harga,0),",","") AS harga')
+                'harga'
             )
             ->where('status','=','1')
-            ->orderBy('jenis','asc')
+            ->orderBy('id','asc')
             ->get();
     }
 
@@ -138,8 +139,45 @@ class c_Android extends Controller
             ->select('id','jenis as text','harga')
 //            ->whereNotIn('id',$libur)
             ->where('status','=','1')
-            ->orderBy('jenis','asc')
+            ->orderBy('id','asc')
+        
             ->get();
+    }
+
+    // insertPenumpang turun
+    public function insertPenumpangTurun(Request $request) {
+        try {
+            DB::beginTransaction(); 
+            $data = json_decode($request->data);
+   
+            foreach ($data as $d) {        
+                $lmb = new muatanBus();
+                $lmb->id_koridor = $d->_idKoridor;
+                $lmb->idPenumpang = '88';
+                $lmb->id_shelter = $d->_idShelter;
+                $lmb->id_bus = $d->_idbus;
+                $lmb->username = $d->_username;
+                $lmb->shift = $d->_shift;
+                $lmb->tanggal = $d->_tgl;
+                $lmb->tipe = 2;
+                $lmb->arah = 2;
+                $lmb->total = $d->_total;
+                $lmb->save();
+            
+            }
+
+            DB::commit();
+            $result = [
+                'status' => 'success'
+            ];
+            
+            return response()->json($result);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return response()->json([$ex]);
+   
+//            dd('exception block',$ex);
+        }
     }
 
     public function sync(Request $request) {
@@ -166,6 +204,7 @@ class c_Android extends Controller
 
                 $lmb = new muatanBus();
                 $lmb->id_koridor = $d->koridor;
+                $lmb->idPenumpang = $d->penumpang;
                 $lmb->id_shelter = $d->shelter;
                 $lmb->id_bus = $d->bus;
                 $lmb->username = $d->username;
@@ -255,6 +294,7 @@ class c_Android extends Controller
         $tgl = date('Y-m-d',strtotime($request->tgl));
         $koridor = $request->koridor;
         $username = $request->username;
+        $idShelter;
         $data = [];
         try {
             $shelters = DB::table('master_shelter')
@@ -263,34 +303,53 @@ class c_Android extends Controller
                     ['status','=',1],
                 ])
                 ->get();
+
+                
             foreach ($shelters as $shelter) {
                 $dt = new \stdClass();
                 $dt->id = $shelter->id;
                 $dt->nama = $shelter->nama;
                 $dt->naik = 0;
                 $dt->turun = 0;
+                $idShelter= $shelter->id;
 //                $dt->total = 0;
+$array=[]; 
+$dt->penumpang=$array;
                 $msKoridor = DB::table('muatan_bus')
-                    ->select('arah', DB::raw('SUM(total) as total') )
+                
                     ->where([
                         ['tanggal','=',$tgl],
                         ['id_shelter','=',$shelter->id],
                         ['id_koridor','=',$koridor],
                         ['username','=',$username],
+                        ['tipe','=','2'],
                     ])
-                    ->groupBy('arah')
+                    ->orderBy('idPenumpang', 'ASC')
                     ->get();
+      
                 foreach ($msKoridor as $k) {
                     if ($k->arah == 1) {
                         $dt->naik += $k->total;
+          if($k->id_shelter==$idShelter)
+          {
+            $array[]= $k;
+            $dt->penumpang=$array;
+
+          }
+
+         
 //                        $dt->total += $k->total;
                     } else {
                         $dt->turun += $k->total;
 //                        $dt->total -= $k->total;
                     }
                 }
+            
+            
                 $data[] = $dt;
+      
             }
+       
             return $data;
         } catch (\Exception $ex) {
             return \response()->json([$ex,$tgl]);

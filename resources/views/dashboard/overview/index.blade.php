@@ -9,7 +9,7 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Jumlah User Aplikasi</h4>
+                        {{-- <h4>Jumlah User Aplikasi</h4> --}}
                     </div>
                     <div class="card-body" id="tUser">
                         0
@@ -19,29 +19,14 @@
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
-                <div class="card-icon bg-danger">
+                <div class="card-icon bg-warning">
                     <i class="fas fa-archway"></i>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Jumlah Koridor</h4>
+                        {{-- <h4>Jumlah Koridor</h4> --}}
                     </div>
                     <div class="card-body" id="tKoridor">
-                        0
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-            <div class="card card-statistic-1">
-                <div class="card-icon bg-warning">
-                    <i class="fas fa-store-alt"></i>
-                </div>
-                <div class="card-wrap">
-                    <div class="card-header">
-                        <h4>Jumlah Shelter</h4>
-                    </div>
-                    <div class="card-body" id="tShelter">
                         0
                     </div>
                 </div>
@@ -54,9 +39,24 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Jumlah Bus</h4>
+                        {{-- <h4>Jumlah Bus</h4> --}}
                     </div>
                     <div class="card-body" id="tBus">
+                        0
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div class="card card-statistic-1">
+                <div class="card-icon bg-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="card-wrap">
+                    <div class="card-header">
+                        {{-- <h4>Jumlah Shelter</h4> --}}
+                    </div>
+                    <div class="card-body" id="tShelter">
                         0
                     </div>
                 </div>
@@ -143,8 +143,8 @@
                     // console.log(response);
                     info.user.html(response.user_aplikasi+' Users');
                     info.koridor.html(response.koridor+' Koridor');
-                    info.shelter.html(response.shelter+' Shelter');
-                    info.bus.html(response.bus+' Bus');
+                    info.shelter.html(response.problem+' Masalah');
+                    info.bus.html(response.bus+' Bus'+'<br>'+response.shelter+' Shelter');
                     info.tiket_hari_ini.html(response.tiket_hari_ini);
                     info.transaksi_hari_ini.html('Rp '+numeral(response.transaksi_hari_ini).format('0,0'));
                     info.transaksi_bulan_ini.html('Rp '+numeral(response.transaksi_bulan_ini).format('0,0'));

@@ -55,6 +55,9 @@ class c_Overview extends Controller
             $shelter = DB::table('master_shelter')
                 ->selectRaw('COUNT(id) AS total')
                 ->where('status','=',1)->first();
+            $problem = DB::table('problems')
+                ->selectRaw('COUNT(id) AS total')
+                ->where('status','=',0)->first();
             $transaksiBulanIni = DB::table('transaksi')
                 ->select(DB::raw('SUM(harga) as transaksi'))
                 ->whereBetween('tgl_transaksi',[
@@ -66,6 +69,7 @@ class c_Overview extends Controller
                 'koridor' => $koridor->total,
                 'bus' => $bus->total,
                 'shelter' => $shelter->total,
+                'problem' => $problem->total,
                 'statistics_chart' => $last7dayHarga,
                 'tiket_hari_ini' => $last7dayTicket[6],
                 'transaksi_hari_ini' => $last7dayHarga[6] ?? 0,

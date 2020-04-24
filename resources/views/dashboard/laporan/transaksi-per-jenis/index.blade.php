@@ -1,4 +1,4 @@
-@extends('dashboard.layout')
+@extends('dashboard.layout2')
 
 @section('content')
     <div class="section-body">
@@ -156,14 +156,14 @@
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
                     }
                 },
-                dataLoaded: function(data) {
-                    if (data.length > 0) {
-                        // console.log(data);
-                        btnExport.removeAttr('disabled');
-                    } else {
-                        btnExport.attr('disabled',true);
-                    }
-                },
+                // dataLoaded: function(data) {
+                //     if (data.length > 0) {
+                //         // console.log(data);
+                //         btnExport.removeAttr('disabled');
+                //     } else {
+                //         btnExport.attr('disabled',true);
+                //     }
+                // },
                 columns: [
                     {formatter:"rownum",align:"center"},
                     {

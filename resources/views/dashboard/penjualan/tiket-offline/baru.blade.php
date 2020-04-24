@@ -26,6 +26,23 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-sm-12 col-md-5 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="iTiket">Tiket</label>
+                                        <select style="width: 100%" id="iTiket" name="tiket" required></select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label for="iSisaTiket">Sisa Tiket</label>
+                                        <input type="text" class="form-control text-right" id="iSisaTiket" name="sisa_tiket" readonly>
+                                        <input type="hidden" class="form-control text-right" id="kode_tiket" name="kode_tiket" readonly>
+                                        <input type="hidden" class="form-control text-right" id="iTiketAwal" name="tiket_awal" readonly>
+                                        <input type="hidden" class="form-control text-right" id="iTiketAkhir" name="tiket_akhir" readonly>
+                                        <input type="hidden" class="form-control text-right" id="iQtyTiket" name="qty_tiket" readonly>
+                                        <input type="hidden" class="form-control text-right" id="iSisaTiket_" name="sisa_tiket_" readonly>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 col-md-5 col-lg-4">
@@ -55,12 +72,12 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-sm-12 col-md-5 col-lg-5">
+                                <!-- <div class="col-sm-12 col-md-5 col-lg-5">
                                     <div class="form-group">
-                                        <label for="iStartTiket">Nomor Tiket Awal</label>
-                                        <input type="number" class="form-control" id="iStartTiket" name="start_tiket" required>
-                                    </div>
-                                </div>
+                                        <label for="iStartTiket">Nomor Tiket Awal</label> -->
+                                        <input type="hidden" class="form-control" id="iStartTiket" name="start_tiket" required>
+                                    <!-- </div>
+                                </div> -->
                                 <div class="col-sm-12 col-md-5 col-lg-5">
                                     <div class="form-group">
                                         <label for="iEndTiket">Nomor Tiket Akhir</label>
@@ -106,13 +123,26 @@
 @section('script')
     <script type="text/javascript">
         function calculateTotal() {
+            tiketAwal = numeral(iTiketAwal.val()).value();
+            tiketAkhir = numeral(iTiketAkhir.val()).value();
+            sisaTiket = numeral(iSisaTiket.val()).value();
+            qtyTiket = numeral(iQtyTiket.val()).value();
+
+            if (tiketAkhir-(tiketAwal-1)===sisaTiket) {
+                start = tiketAwal;
+            }else{
+                start = tiketAwal+(qtyTiket-sisaTiket);
+            }
             let hargaTiket = numeral(iHargaTiket.val()).value();
-            let start = parseInt(iStartTiket.value);
+
+            // let start = parseInt(iStartTiket.value);
             let end = parseInt(iEndTiket.value);
-            if (start !== 0 && end !== 0 && start < end && hargaTiket !== null) {
+            if ( end !== 0 && hargaTiket !== null && start < end && end <= tiketAkhir) {
                 let totalTiket = end - (start-1);
                 let totalBiaya = totalTiket*hargaTiket;
                 iTotal.value = totalTiket;
+                iStartTiket.value = start;
+                iSisaTiket_.value = sisaTiket-iTotal.value;
                 iTotalBiaya.value = numeral(totalBiaya).format('0,0.0');
             } else {
                 iTotal.value = '';
@@ -123,6 +153,12 @@
         const btnSubmit = $('#btnSubmit');
         const spinner = $('#spinner');
         const iHargaTiket = $('#iHargaTiket');
+        const kode_tiket = $('#kode_tiket');
+        const iSisaTiket = $('#iSisaTiket');
+        const iSisaTiket_ = document.getElementById('iSisaTiket_');
+        const iTiketAwal = $('#iTiketAwal');
+        const iTiketAkhir = $('#iTiketAkhir');
+        const iQtyTiket = $('#iQtyTiket');
         const iStartTiket = document.getElementById('iStartTiket');
         const iEndTiket = document.getElementById('iEndTiket');
         const iTotal = document.getElementById('iTotal');
@@ -132,8 +168,20 @@
         const iPetugas = $('#iPetugas');
         const iShift = $('#iShift');
         const iBus = $('#iBus');
+        const iTiket = $('#iTiket');
 
         $(document).ready(function () {
+            iTiket.select2({
+                ajax: {
+                    url: '{{ url('tiket') }}',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            search: params.term,
+                        }
+                    }
+                }
+            });
             iPetugas.select2({
                 ajax: {
                     url: '{{ url('petugas') }}',
@@ -191,6 +239,25 @@
                     method: 'get',
                     success: function (response) {
                         iHargaTiket.val(numeral(response.harga).format('0,0.0'));
+                        // calculateTotal();
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                })
+            });
+
+            iTiket.change(function () {
+                let id = this.value;
+                $.ajax({
+                    url: '{{ url('tiket') }}/'+id,
+                    method: 'get',
+                    success: function (response) {
+                        iSisaTiket.val(numeral(response.sisa).format('0,0'));
+                        iTiketAwal.val(numeral(response.awal).format('0,0'));
+                        iTiketAkhir.val(numeral(response.akhir).format('0,0'));
+                        iQtyTiket.val(numeral(response.qty).format('0,0'));
+                        kode_tiket.val(response.kode);
                         calculateTotal();
                     },
                     error: function (response) {
@@ -198,10 +265,10 @@
                     }
                 })
             });
-            iStartTiket.addEventListener('keyup',function (e) {
-                e.preventDefault();
-                calculateTotal();
-            });
+            // iStartTiket.addEventListener('keyup',function (e) {
+            //     e.preventDefault();
+            //     calculateTotal();
+            // });
             iEndTiket.addEventListener('keyup',function (e) {
                 e.preventDefault();
                 calculateTotal();

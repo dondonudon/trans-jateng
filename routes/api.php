@@ -42,3 +42,4 @@ Route::post('sync','c_Android@sync');
 Route::post('problem','c_Android@problemReport');
 Route::post('rekap-transaksi','c_Android@rekapTransaksi');
 Route::post('laporan-lmb','c_Android@lmbReport');
+Route::post('addPenumpangTurun', 'c_Android@insertPenumpangTurun');

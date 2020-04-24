@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\msPenumpang;
 use App\transaksi;
+use App\msTiket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -22,6 +23,8 @@ class c_PenjualanTiketOffline extends Controller
         $penumpang = $request->penumpang;
         $start = $request->start_tiket;
         $end = $request->end_tiket;
+        $kode_tiket = $request->kode_tiket;
+        $sisa = $request->sisa_tiket_;
         $dtPenumpang = msPenumpang::find($penumpang);
         try {
             DB::beginTransaction();
@@ -42,6 +45,10 @@ class c_PenjualanTiketOffline extends Controller
                 $trn->harga = $dtPenumpang->harga;
                 $trn->save();
             }
+            DB::table('ms_tiket')->where('kode','=',$kode_tiket)
+            ->update([
+                'sisa' => $sisa
+            ]);
             DB::commit();
             return 'success';
         } catch (\Exception $ex) {
